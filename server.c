@@ -81,6 +81,7 @@ main ()
 
 	struct json_object *json;
 	struct json_object *jugadores;
+	struct json_object *evento;
 	struct json_object *jugador;
 
 	size_t n_jugadores;
@@ -90,7 +91,9 @@ main ()
 
 	printf ("Servidor C: Recibido %s\n", Cadena);
 
-	json_object_object_get_ex(json, "'jugadores'", &jugadores);
+	json_object_object_get_ex(json, "evento", &evento);
+	printf ("Servidor C: Recibido %s\n", json_object_get_string(evento));
+	json_object_object_get_ex(json, "jugadores", &jugadores);
 	
 
 	n_jugadores = json_object_array_length(jugadores);
