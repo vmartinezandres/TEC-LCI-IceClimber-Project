@@ -30,6 +30,8 @@ main ()
 		exit (-1);
 	}
 
+	printf ("Esperando conexion...\n");
+
 	/*
 	* Se espera un cliente que quiera conectarse
 	*/
@@ -40,6 +42,8 @@ main ()
 		exit (-1);
 	}
 
+	printf ("Conectado...\n");
+	
    /*
     * Se envia un entero con la longitud de una cadena (incluido el \0 del final) y
     * la cadena.
@@ -66,14 +70,15 @@ main ()
    Lee_Socket (Socket_Cliente, (char *)&Aux, sizeof(Longitud_Cadena));
 
    /* El entero recibido hay que transformarlo de formato red a formato hardware */
-   Longitud_Cadena = ntohl(Aux);
-   printf ("Servidor C: Recibido %d\n", Longitud_Cadena-1);
-  
+   int longitud_Cadena = ntohl(Aux);
+   printf ("Servidor C: Recibido %d\n", longitud_Cadena-1);
+
 
   // "{'evento': 'update', jugadores: [{id: 1, x:1, y:2}, {id:2, x:3, y:4}]}"
    /* Se lee la cadena */
-	Lee_Socket (Socket_Cliente, Cadena, Longitud_Cadena);
-	
+	Lee_Socket (Socket_Cliente, Cadena, longitud_Cadena);
+	printf ("Servidor C: Recibido %s\n", Cadena);
+
 	struct json_object *json;
 	struct json_object *jugadores;
 	struct json_object *jugador;
@@ -83,7 +88,9 @@ main ()
 
 	json = json_tokener_parse(Cadena);
 
-	json_object_object_get_ex(json, 'jugadores', &jugadores);
+	printf ("Servidor C: Recibido %s\n", Cadena);
+
+	json_object_object_get_ex(json, "'jugadores'", &jugadores);
 	
 
 	n_jugadores = json_object_array_length(jugadores);
@@ -94,10 +101,11 @@ main ()
 	{
 		jugador = json_object_array_get_idx(jugadores, i);
 		i++;
-		printf();
+		printf(json_object_object_get(jugador, "id"));
+		printf(json_object_object_get(jugador, "x"));
+		printf(json_object_object_get(jugador, "y"));
 	}
 
-   	printf ("Servidor C: Recibido %s\n", Cadena);
 
 	/*
 	* Se cierran los sockets

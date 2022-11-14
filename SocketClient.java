@@ -43,7 +43,7 @@ public class SocketClient
                new DataOutputStream (socket.getOutputStream());
 
              /* Se crea el dato y se escribe en el flujo de salida */
-             DataSocket aux = new DataSocket ("{'evento': 'update', 'jugador': 1, 'x': 1, 'y': 2}");
+             DataSocket aux = new DataSocket ("{'evento': 'update', 'jugadores': [{ 'id': 1, 'x':1, 'y':2}, {'id':2, 'x':3, 'y':4}]}");
              aux.writeObject (bufferSalida);
 
              System.out.println ("Cliente Java: Enviado " + aux.toString());
