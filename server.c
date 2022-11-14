@@ -5,6 +5,7 @@
 #include "library/Socket.h"
 #include <string.h>
 #include <stdio.h>
+#include <json-c/json.h>
 
 main ()
 {
@@ -15,11 +16,11 @@ main ()
 	int Socket_Cliente;
     int Aux;
     int Longitud_Cadena;
-	char Cadena[100];
+	char Cadena[1024];
 
 	/*
 	* Se abre el socket servidor, con el servicio "cpp_java" dado de
-	* alta en /etc/services. El número de dicho servicio debe ser 35557, que es
+	* alta en /etc/services. El número de dicho servicio debe ser 25557, que es
    * el que se ha puesto en el código java del cliente.
 	*/
 	Socket_Servidor = Abre_Socket_Inet ("cpp_java");
@@ -68,9 +69,35 @@ main ()
    Longitud_Cadena = ntohl(Aux);
    printf ("Servidor C: Recibido %d\n", Longitud_Cadena-1);
   
+
+  // "{'evento': 'update', jugadores: [{id: 1, x:1, y:2}, {id:2, x:3, y:4}]}"
    /* Se lee la cadena */
 	Lee_Socket (Socket_Cliente, Cadena, Longitud_Cadena);
-   printf ("Servidor C: Recibido %s\n", Cadena);
+	
+	struct json_object *json;
+	struct json_object *jugadores;
+	struct json_object *jugador;
+
+	size_t n_jugadores;
+	size_t i;
+
+	json = json_tokener_parse(Cadena);
+
+	json_object_object_get_ex(json, 'jugadores', &jugadores);
+	
+
+	n_jugadores = json_object_array_length(jugadores);
+
+	printf("Found %lu friends \n", n_jugadores);
+
+	for (i=0; i<n_jugadores; i++)
+	{
+		jugador = json_object_array_get_idx(jugadores, i);
+		i++;
+		printf();
+	}
+
+   	printf ("Servidor C: Recibido %s\n", Cadena);
 
 	/*
 	* Se cierran los sockets

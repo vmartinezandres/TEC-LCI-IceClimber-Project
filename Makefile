@@ -12,8 +12,8 @@ CFLAGS = -g -I. -I$(PATH_CHSOCKET)
 Servidor : server.c
 	cc server.c -L$(PATH_CHSOCKET) -lChSocket -o Servidor
 
-Cliente : client.c
-	cc client.c -L$(PATH_CHSOCKET) -lChSocket -o Cliente
+Cliente : SocketClient.java
+	javac SocketClient.java DataSocket.java
 
 clean :
 	rm *.o Cliente Servidor	

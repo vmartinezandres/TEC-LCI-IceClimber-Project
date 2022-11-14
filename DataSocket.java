@@ -1,4 +1,5 @@
 
+
 import java.io.*;
 
 /**
@@ -39,7 +40,7 @@ public class DataSocket implements Serializable
    * Método para escribir los atributos de esta clase en un DataOutputStream de forma
    * que luego pueda entenderlos un programa en C.
    */
-   public void writeObject(java.io.DataOutputStream out)
+   public void writeObject(DataOutputStream out)
          throws IOException
      {
          // Se envía la longitud de la cadena + 1 por el \0 necesario en C
@@ -58,7 +59,7 @@ public class DataSocket implements Serializable
       * Este método no contempla el caso de que se envíe una cadena "", es decir, un
       * único \0.
       */
-     public void readObject(java.io.DataInputStream in)
+     public void readObject(DataInputStream in)
      throws IOException
      {
          // Se lee la longitud de la cadena y se le resta 1 para eliminar el \0 que

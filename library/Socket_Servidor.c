@@ -9,58 +9,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-/*
-*	Abre socket servidor UNIX. Se le pasa el servicio que se desea atender. 
-* Deja el socket preparado
-* para aceptar conexiones de clientes.
-* Devuelve el descritor del socket servidor, que se debera pasar
-* a la funcion Acepta_Conexion_Cliente(). Devuelve -1 en caso de error
-*/
-int Abre_Socket_Unix (char *Servicio)
-{
-	struct sockaddr_un Direccion;
-	int Descriptor;
-
-	/*
-	* Se abre el socket
-	*/
-	Descriptor = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (Descriptor == -1)
-	 	return -1;
-
-	/*
-	* Se rellenan en la estructura Direccion los datos necesarios para
-	* poder llamar a la funcion bind()
-	*/
-	strcpy (Direccion.sun_path, Servicio);
-	Direccion.sun_family = AF_UNIX;
-
-	if (bind (
-			Descriptor, 
-			(struct sockaddr *)&Direccion, 
-			strlen (Direccion.sun_path) + sizeof (Direccion.sun_family)) == -1)
-	{
-		/*
-		* En caso de error cerramos el socket y devolvemos error
-		*/
-		close (Descriptor);
-		return -1;
-	}
-
-	/*
-	* Avisamos al sistema que comience a atender peticiones de clientes.
-	*/
-	if (listen (Descriptor, 1) == -1)
-	{
-		close (Descriptor);
-		return -1;
-	}
-
-	/*
-	* Se devuelve el descriptor del socket servidor
-	*/
-	return Descriptor;
-}
 
 /*
 * Se le pasa un socket de servidor y acepta en el una conexion de cliente.
@@ -119,6 +67,7 @@ int Abre_Socket_Inet (char *Servicio)
 	if (Puerto == NULL)
 		return -1;
 
+
 	/*
 	* Se rellenan los campos de la estructura Direccion, necesaria
 	* para la llamada a la funcion bind()
@@ -139,58 +88,6 @@ int Abre_Socket_Inet (char *Servicio)
 	* Se avisa al sistema que comience a atender llamadas de clientes
 	*/
 	if (listen (Descriptor, 1) == -1)
-	{
-		close (Descriptor);
-		return -1;
-	}
-
-	/*
-	* Se devuelve el descriptor del socket servidor
-	*/
-	return Descriptor;
-}
-
-/**
- * Abre un socket inet de udp.
- * Se le pasa el nombre de servicio del socket al que debe atender.
- * Devuelve el descriptor del socket abierto o -1 si ha habido alg�n error.
- */
-int Abre_Socket_Udp (char *Servicio)
-{
-	struct sockaddr_in Direccion;
-	struct servent *Puerto = NULL;
-	int Descriptor;
-
-	/*
-	* se abre el socket
-	*/
-	Descriptor = socket (AF_INET, SOCK_DGRAM, 0);
-	if (Descriptor == -1)
-	{
-	 	return -1;
-	}
-
-	/*
-	* Se obtiene el servicio del fichero /etc/services
-	*/
-	Puerto = getservbyname (Servicio, "tcp");
-	if (Puerto == NULL)
-	{
-		return -1;
-	}
-
-	/*
-	* Se rellenan los campos de la estructura Direccion, necesaria
-	* para la llamada a la funcion bind() y se llama a esta.
-	*/
-	Direccion.sin_family = AF_INET;
-	Direccion.sin_port = Puerto->s_port;
-	Direccion.sin_addr.s_addr = INADDR_ANY; 
-
-	if (bind (
-			Descriptor, 
-			(struct sockaddr *)&Direccion, 
-			sizeof (Direccion)) == -1)
 	{
 		close (Descriptor);
 		return -1;
