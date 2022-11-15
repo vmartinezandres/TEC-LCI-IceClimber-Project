@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+//import org.json.*;
 
 /**
  * Clase que crea un socket cliente, establece la conexión y lee los datos
@@ -7,54 +8,160 @@ import java.io.*;
  */
 public class SocketClient
  {
-     /** Programa principal, crea el socket cliente */
-     public static void main (String [] args)
-     {
-         new SocketClient();
-     }
-     
-     /**
-      * Crea el socket cliente y lee los datos
-      */
-     public SocketClient()
-     {
-         try
-         {
-             /* Se crea el socket cliente */
-             Socket socket = new Socket ("localhost", 25557);
-             System.out.println ("conectado");
 
-             /* Se hace que el cierre espere a la recogida de todos los datos desde
-             * el otro lado */
-             socket.setSoLinger (true, 10);
-             
-             /* Se obtiene un stream de lectura para leer objetos */
-             DataInputStream bufferEntrada =
-                new DataInputStream (socket.getInputStream());
-             
-             /* Se lee un Datosocket que nos envía el servidor y se muestra 
-              * en pantalla */
-             DataSocket dato = new DataSocket("");
-             dato.readObject(bufferEntrada);
-             System.out.println ("Cliente Java: Recibido " + dato.toString());
+    public String message;
+    public String serverResponse;
 
-             /* Se obtiene un flujo de envio de datos para enviar un dato al servidor */
-             DataOutputStream bufferSalida =
-               new DataOutputStream (socket.getOutputStream());
+    /** Programa principal, crea el socket cliente */
+    public static void main (String [] args)
+    {
+        SocketClient client = new SocketClient();
+        client.run();
+    }
+    
+    public SocketClient()
+    {
 
-             /* Se crea el dato y se escribe en el flujo de salida */
-             DataSocket aux = new DataSocket ("{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}");
-             aux.writeObject (bufferSalida);
+    }
+    /**
+     * Crea el socket cliente y lee los datos
+    */
+    public SocketClient(int value)
+    {
+        
+        try
+        {
+            /* Se crea el socket cliente */
+            Socket socket = new Socket ("localhost", 25557);
+            System.out.println ("conectado");
 
-             System.out.println ("Cliente Java: Enviado " + aux.toString());
+            /* Se hace que el cierre espere a la recogida de todos los datos desde
+            * el otro lado */
+            socket.setSoLinger (true, 10);
+            
+            /* Se obtiene un stream de lectura para leer objetos */
+            DataInputStream bufferEntrada =
+            new DataInputStream (socket.getInputStream());
+            
+            /* Se lee un Datosocket que nos envía el servidor y se muestra 
+            * en pantalla */
+            DataSocket dato = new DataSocket("");
+            dato.readObject(bufferEntrada);
+            String response = dato.toString();
+            System.out.println ("Cliente Java: Recibido " + response);
+
+            /*
+
+            PROBLEMA PARA LA DIANA DEL FUTURO
+
+            JSONObject json = new JSONObject(response);
+
+            System.out.println(json.getString("evento"));
+
+            JSONArray jugadores = json.getJSONArray("jugadores");
+
+            int n_jugadores = jugadores.length();
+
+            System.out.println("número de jugadores "+ n_jugadores);
+
+            for (int i = 0; i<n_jugadores; i++)
+            {
+                JSONObject jugador = jugadores.getJSONObject(i);
+
+                System.out.println(jugador.getString("id"));
+                System.out.println(jugador.getInt("x"));
+                System.out.println(jugador.getInt("y"));
+            }
+             */
+            
+
            
-             /* La llamada a setSoLinger() hará que el cierre espere a que el otro
-             lado retire los datos que hemos enviado */
-             socket.close();
-         }
-         catch (Exception e)
-         {
-             e.printStackTrace();
-         }
-     }
+            /* Se obtiene un flujo de envio de datos para enviar un dato al servidor */
+            DataOutputStream bufferSalida =
+            new DataOutputStream (socket.getOutputStream());
+
+            /* Se crea el dato y se escribe en el flujo de salida */
+            DataSocket aux = new DataSocket ("{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}");
+            aux.writeObject(bufferSalida);
+
+
+            System.out.println ("Cliente Java: Enviado " + aux.toString());
+        
+            /* La llamada a setSoLinger() hará que el cierre espere a que el otro
+            lado retire los datos que hemos enviado */
+            socket.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+    }
+
+    public void run()
+    {
+        try
+        {
+            /* Se crea el socket cliente */
+            Socket socket = new Socket ("localhost", 25557);
+            System.out.println ("conectado");
+
+            /* Se hace que el cierre espere a la recogida de todos los datos desde
+            * el otro lado */
+            socket.setSoLinger (true, 10);
+
+            
+            while(socket.isConnected())
+            {
+
+                String message = System.console().readLine();
+
+                this.message = message;
+                //this.message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}";
+                
+                /* Se obtiene un flujo de envio de datos para enviar un dato al servidor */
+                DataOutputStream request = new DataOutputStream (socket.getOutputStream());
+
+                /* Se crea el dato y se escribe en el flujo de salida */
+                DataSocket aux = new DataSocket (message);
+                
+                aux.writeObject(request);
+
+                System.out.println ("Cliente Java: Enviado " + aux.toString());
+
+                /* Se obtiene un stream de lectura para leer objetos */
+                DataInputStream response = new DataInputStream (socket.getInputStream());
+
+                /* Se lee un Datosocket que nos envía el servidor y se muestra 
+                * en pantalla */
+                DataSocket dato = new DataSocket("");
+
+                dato.readObject(response);
+
+                int length = dato.c;
+                String responsetoString = dato.d;
+
+                System.out.println ("Cliente Java: Recibido " +length +"-----"+ responsetoString);
+
+                this.serverResponse = responsetoString;
+
+                if(responsetoString.equals("quit"))
+                {
+                    break;
+                }
+            }
+
+
+            /* La llamada a setSoLinger() hará que el cierre espere a que el otro
+            lado retire los datos que hemos enviado */
+            socket.close();
+            
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 }
