@@ -10,10 +10,10 @@ PATH_CHSOCKET=//home/diani/Documents/TEC-LCI-IceClimber-Project/library
 
 CFLAGS = -g -I. -I$(PATH_CHSOCKET)
 
-Server : server.c
-	cc server.c -ljson-c -L$(PATH_CHSOCKET) -lChSocket -o Servidor
+server : server.c
+	cc server.c -ljson-c -L$(PATH_CHSOCKET) -lChSocket -o server
 
-Client : SocketClient.java
+client : SocketClient.java
 	javac -cp /home/diani/Documents/JSON/json-20220924.jar SocketClient.java DataSocket.java
 clean :
-	rm *.o Cliente Servidor	
+	rm *.o server server	
