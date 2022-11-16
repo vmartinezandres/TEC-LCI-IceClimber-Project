@@ -14,100 +14,13 @@ struct player
 	int y;
 };
 
-struct messagePackage
+typedef struct messagePackage
 {
 	char *event;
-	struct player *player1;
-	struct player *player2;
+	struct player player1;
+	struct player player2;
 	
 };
-
-main ()
-{
-	/*
-	* Descriptores de socket servidor y de socket con el cliente
-	*/
-    int Socket_Servidor;
-	int Socket_Cliente;
-    int Aux;
-    int Longitud_Cadena;
-	char Cadena[1024];
-
-	/*
-	* Se abre el socket servidor, con el servicio "cpp_java" dado de
-	* alta en /etc/services. El número de dicho servicio debe ser 25557, que es
-   	* el que se ha puesto en el código java del cliente.
-	*/
-	Socket_Servidor = Abre_Socket_Inet ("cpp_java");
-	if (Socket_Servidor == -1)
-	{
-		printf ("No se puede abrir socket servidor\n");
-		exit (-1);
-	}
-
-	printf ("Esperando conexion...\n");
-
-	/*
-	* Se espera un cliente que quiera conectarse
-	*/
-	Socket_Cliente = Acepta_Conexion_Cliente (Socket_Servidor);
-	if (Socket_Servidor == -1)
-	{
-		printf ("No se puede abrir socket de cliente\n");
-		exit (-1);
-	}
-
-	printf ("Conectado...\n");
-	 
-	int x = 0;
-
-	while(TRUE)
-	{
-
-		/*
-		* Se lee la informacion del cliente, primero el número de caracteres de la cadena
-		* que vamos a recibir (incluido el \0) y luego la cadena.
-		*/
-		int read = Lee_Socket (Socket_Cliente, (char *)&Aux, sizeof(Longitud_Cadena));
-
-		/* El entero recibido hay que transformarlo de formato red a formato hardware */
-		int longitud_Cadena = ntohl(Aux);
-		printf ("Servidor C: Recibido %d\n", longitud_Cadena-1);
-
-		/* Se lee la cadena */
-		Lee_Socket (Socket_Cliente, Cadena, longitud_Cadena);
-		printf ("Servidor C: Recibido %s\n", Cadena);
-
-		// PARSEA MENSAJE DE CLIENTE 
-
-		// LOGICA PARA DAR RESPUESTA 
-
-		/*
-		* Se envia un entero con la longitud de una cadena (incluido el \0 del final) y
-		* la cadena.
-		*/
-		//strcpy (Cadena, "mensaje de respuesta");
-		Longitud_Cadena = strlen(Cadena)+1;
-
-		/* El entero que se envía por el socket hay que transformalo a formato red */
-		int aux = htonl (Longitud_Cadena);
-
-		/* Se envía el entero transformado */
-		Escribe_Socket (Socket_Cliente, (char *)&aux, sizeof(Longitud_Cadena));
-		printf ("Servidor C: Enviado %d\n", Longitud_Cadena-1);
-		
-		/* Se envía la cadena */
-		Escribe_Socket (Socket_Cliente, Cadena, Longitud_Cadena);
-		printf ("Servidor C: Enviado %s\n", Cadena);
-
-	}
-
-	/*
-	* Se cierran los sockets
-	*/
-	close (Socket_Cliente);
-	close (Socket_Servidor);
-}
 
 struct messagePackage ReadParseJson(char *Data)
 {
@@ -120,7 +33,8 @@ struct messagePackage ReadParseJson(char *Data)
 	struct json_object *xCoordenate;
 	struct json_object *yCoordanate;
 	struct messagePackage parseMessage;
-	
+	struct player player1;
+	struct player player2;
 	
 	size_t n_jugadores;
 	size_t i;
@@ -158,27 +72,117 @@ struct messagePackage ReadParseJson(char *Data)
 
 		if( i == 0)
 		{
-			struct player *player1;
-
-			player1->id = json_object_get_string(idPlayer);
-			player1->x = json_object_get_int(xCoordenate);
-			player1->y = json_object_get_int(yCoordanate);
+			player1.id = json_object_get_string(idPlayer);
+			player1.x = json_object_get_int(xCoordenate);
+			player1.y = json_object_get_int(yCoordanate);
 
 			parseMessage.player1 = player1;
 		}
-		else 
+		else if (i == 1)
 		{
-			struct player *player2;
-
-			player2->id = json_object_get_string(idPlayer);
-			player2->x = json_object_get_int(xCoordenate);
-			player2->y = json_object_get_int(yCoordanate);
+			player2.id = json_object_get_string(idPlayer);
+			player2.x = json_object_get_int(xCoordenate);
+			player2.y = json_object_get_int(yCoordanate);
 
 			parseMessage.player2 = player2;
-		}
 
+		}
+		
 	}
 
 	return parseMessage;
 }
+
+main ()
+{
+	/*
+	* Descriptores de socket servidor y de socket con el cliente
+	*/
+    int Socket_Servidor;
+	int Socket_Cliente;
+	char Cadena[1024];
+
+	/*
+	* Se abre el socket servidor, con el servicio "cpp_java" dado de
+	* alta en /etc/services. El número de dicho servicio debe ser 25557, que es
+   	* el que se ha puesto en el código java del cliente.
+	*/
+	Socket_Servidor = Abre_Socket_Inet ("cpp_java");
+	if (Socket_Servidor == -1)
+	{
+		printf ("No se puede abrir socket servidor\n");
+		exit (-1);
+	}
+
+	printf ("Esperando conexion...\n");
+
+	/*
+	* Se espera un cliente que quiera conectarse
+	*/
+	Socket_Cliente = Acepta_Conexion_Cliente (Socket_Servidor);
+	if (Socket_Servidor == -1)
+	{
+		printf ("No se puede abrir socket de cliente\n");
+		exit (-1);
+	}
+
+	printf ("Conectado...\n");
+	 
+
+	while(TRUE)
+	{
+		int aux;
+		int lenght_request;
+
+		/*
+		* Se lee la informacion del cliente, primero el número de caracteres de la cadena
+		* que vamos a recibir (incluido el \0) y luego la cadena.
+		*/
+		int read = Lee_Socket (Socket_Cliente, (char *)&aux, sizeof(lenght_request));
+
+		/* El entero recibido hay que transformarlo de formato red a formato hardware */
+		int longitud_Cadena = ntohl(aux);
+		printf ("Servidor C: Recibido %d\n", longitud_Cadena-1);
+
+		/* Se lee la cadena */
+		Lee_Socket (Socket_Cliente, Cadena, longitud_Cadena);
+		printf ("Servidor C: Recibido %s\n", Cadena);
+
+
+		ReadParseJson(Cadena);
+
+		// LOGICA PARA DAR RESPUESTA ...
+
+
+		char response[1024];
+		strcpy(response, "mensaje recibido");
+		/*
+		* Se envia un entero con la longitud de una cadena (incluido el \0 del final) y
+		* la cadena.
+		*/
+		//strcpy (Cadena, "mensaje de respuesta");
+		int lenght = strlen(response)+1;
+
+		/* El entero que se envía por el socket hay que transformalo a formato red */
+		int aux_response = htonl (lenght);
+
+		/* Se envía el entero transformado */
+		Escribe_Socket (Socket_Cliente, (char *)&aux_response, sizeof(lenght));
+		printf ("Servidor C: Enviado %d\n", lenght-1);
+		
+
+		/* Se envía la cadena */
+		Escribe_Socket (Socket_Cliente, response, lenght);
+		printf ("Servidor C: Enviado %s\n", response);
+
+	}
+
+	/*
+	* Se cierran los sockets
+	*/
+	close (Socket_Cliente);
+	close (Socket_Servidor);
+}
+
+
 

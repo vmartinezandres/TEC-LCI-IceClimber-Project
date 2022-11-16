@@ -12,13 +12,26 @@ public class SocketClient
     public String message;
     public String serverResponse;
 
+    private Socket socket;
+
     /** Programa principal, crea el socket cliente */
     public static void main (String [] args)
     {
         SocketClient client = new SocketClient();
-        client.run();
+        client.runClient();
+
+        String message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}";
+        client.sendRequest(message);
+        
+        String message1 = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}]}";
+        client.sendRequest(message1);
+
+        client.closeSocket();
     }
     
+    /*
+     * Crea la instancia del socket 
+     */
     public SocketClient()
     {
 
@@ -32,7 +45,7 @@ public class SocketClient
         try
         {
             /* Se crea el socket cliente */
-            Socket socket = new Socket ("localhost", 25557);
+            this.socket = new Socket ("localhost", 25557);
             System.out.println ("conectado");
 
             /* Se hace que el cierre espere a la recogida de todos los datos desde
@@ -97,6 +110,43 @@ public class SocketClient
         }
         
     }
+    
+    /*
+     * Se encarga de inicializar el puesto y establecer la conexion con el server
+     */
+    private void runClient()
+    {
+        try
+        {
+            /* Se crea el socket cliente */
+            this.socket = new Socket ("localhost", 25557);
+            System.out.println ("conectado");
+
+            /* Se hace que el cierre espere a la recogida de todos los datos desde
+            * el otro lado */
+            socket.setSoLinger (true, 10);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+            
+    }
+
+    /*
+     * Este metodo cierra el objeto de socket inicializado
+     */
+    public void closeSocket()
+    {
+        try
+        {
+            this.socket.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public void run()
     {
@@ -141,7 +191,7 @@ public class SocketClient
                 int length = dato.c;
                 String responsetoString = dato.d;
 
-                System.out.println ("Cliente Java: Recibido " +length +"-----"+ responsetoString);
+                System.out.println ("Cliente Java: Recibido " +length +" --- "+ responsetoString);
 
                 this.serverResponse = responsetoString;
 
@@ -162,6 +212,54 @@ public class SocketClient
         {
             e.printStackTrace();
         }
+    }
 
+    /*
+     * Este metodo sera utilizado para mandar el request de mensaje que el server necesita enviar 
+     */
+    public String sendRequest(String message)
+    {
+        try
+        {
+            if(socket.isConnected())
+            {
+                //this.message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}";
+                
+                /* Se obtiene un flujo de envio de datos para enviar un dato al servidor */
+                DataOutputStream request = new DataOutputStream (socket.getOutputStream());
+        
+                /* Se crea el dato y se escribe en el flujo de salida */
+                DataSocket aux = new DataSocket (message);
+                
+                aux.writeObject(request);
+        
+                System.out.println ("Cliente Java: Enviado " + aux.toString());
+        
+                /* Se obtiene un stream de lectura para leer objetos */
+                DataInputStream response = new DataInputStream (socket.getInputStream());
+        
+                /* Se lee un Datosocket que nos envía el servidor y se muestra 
+                * en pantalla */
+                DataSocket dato = new DataSocket("");
+        
+                dato.readObject(response);
+        
+                int length = dato.c;
+                String responsetoString = dato.d;
+        
+                System.out.println ("Cliente Java: Recibido " +length +" --- "+ responsetoString);
+            
+                return responsetoString;
+            }
+            else
+            {
+                return "";
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "";
+        }
     }
 }
