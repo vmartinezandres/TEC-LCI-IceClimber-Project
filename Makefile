@@ -12,8 +12,9 @@ CFLAGS = -g -I. -I$(PATH_CHSOCKET)
 
 server : server.c
 	cc server.c -ljson-c -L$(PATH_CHSOCKET) -lChSocket -o server
+	
+client : SocketClient.java 
+	javac -cp /home/diani/Documents/json-simple-1.1.1.jar SocketClient.java DataSocket.java
 
-client : SocketClient.java
-	javac -cp /home/diani/Documents/JSON/json-20220924.jar SocketClient.java DataSocket.java
 clean :
 	rm *.o server server	

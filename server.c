@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <json-c/json.h>
 
+/* Informacion sobre jugadors*/
 struct player
 {
 	char* id;
@@ -14,6 +15,7 @@ struct player
 	int y;
 };
 
+/* Informacion que se recibe del cliente */
 typedef struct messagePackage
 {
 	char *event;
@@ -21,7 +23,9 @@ typedef struct messagePackage
 	struct player player2;
 	
 };
-
+ 
+/* Esta función se encarga de leer el request que se recibe del cliente 
+   y convertirlo en un struct de tipo json_object*/
 struct messagePackage ReadParseJson(char *Data)
 {
 	
@@ -36,7 +40,7 @@ struct messagePackage ReadParseJson(char *Data)
 	struct player player1;
 	struct player player2;
 	
-	size_t n_jugadores;
+	size_t nJugadores;
 	size_t i;
 
 	json = json_tokener_parse(Data);
@@ -49,15 +53,15 @@ struct messagePackage ReadParseJson(char *Data)
 
 	json_object_object_get_ex(json, "jugadores", &players);
 	
-	n_jugadores = json_object_array_length(players);
+	nJugadores = json_object_array_length(players);
 
-	printf("Found %lu friends \n", n_jugadores);
+	printf("Found %lu friends \n", nJugadores);
 
 
 	/* 
 	Itera por los dos jugadores y crea el objeto parseado utilizando jsons
 	*/
-	for (i=0; i<n_jugadores; i++)
+	for (i=0; i<nJugadores; i++)
 	{	
 		player = json_object_array_get_idx(players, i);
 
@@ -131,11 +135,12 @@ main ()
 
 		printf ("Conectado...\n");
 
-
+		/* se abre un nuevo proceso utilizando Fork()*/
 		if((childpid = fork()) == 0){
 			close (Socket_Servidor);
 
 			while(1){
+
 				int aux;
 				int lenght_request;
 			
@@ -147,11 +152,11 @@ main ()
 				int read = Lee_Socket (Socket_Cliente, (char *)&aux, sizeof(lenght_request));
 
 				/* El entero recibido hay que transformarlo de formato red a formato hardware */
-				int longitud_Cadena = ntohl(aux);
-				printf ("Servidor C: Recibido %d\n", longitud_Cadena-1);
+				int longitudCadena = ntohl(aux);
+				printf ("Servidor C: Recibido %d\n", longitudCadena-1);
 
 				/* Se lee la cadena */
-				Lee_Socket (Socket_Cliente, Cadena, longitud_Cadena);
+				Lee_Socket (Socket_Cliente, Cadena, longitudCadena);
 				printf ("Servidor C: Recibido %s\n", Cadena);
 
 
@@ -159,11 +164,11 @@ main ()
 
 				// LOGICA PARA DAR RESPUESTA ...
 
-
 				char response[1024];
-				strcpy(response, "mensaje recibido");
+				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}], \"npcs\": [{ \"id\": \"foca1\", \"x\":1, \"y\":2}, {\"id\":\"foca2\", \"x\":3, \"y\":4}]}");
+
 				/*
-				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) y
+				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) 
 				* la cadena.
 				*/
 				//strcpy (Cadena, "mensaje de respuesta");
