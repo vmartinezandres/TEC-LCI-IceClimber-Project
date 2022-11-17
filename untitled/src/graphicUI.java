@@ -1,37 +1,36 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
-public class graphicUI extends JFrame implements MouseListener{
-    public int HEIGHT = 960;
-    public int WIDTH = 960;
+public class graphicUI extends JFrame implements KeyListener {
+    public int BLOCKS = 24;
     public int DEFAULTSIZE = 40;
+    public int SPACING = 5;
+    public int HEIGHT = BLOCKS*DEFAULTSIZE;
+    public int WIDTH = BLOCKS*DEFAULTSIZE;
     public int GROUND = HEIGHT - 2*DEFAULTSIZE;
-    public int SECONDFLOOR = GROUND - 4*DEFAULTSIZE;
-    public int THIRDLOOR = SECONDFLOOR - 4*DEFAULTSIZE;
-    public int FOURTHFLOOR = THIRDLOOR - 4*DEFAULTSIZE;
-    public int FIFTHFLOOR = FOURTHFLOOR - 4*DEFAULTSIZE;
-
-    public int SIXTHFLOOR = FIFTHFLOOR - 4*DEFAULTSIZE;
+    public int SECONDFLOOR = GROUND - SPACING*DEFAULTSIZE;
+    public int THIRDFLOOR = SECONDFLOOR - SPACING*DEFAULTSIZE;
+    public int FOURTHFLOOR = THIRDFLOOR - SPACING*DEFAULTSIZE;
+    public int FIFTHFLOOR = FOURTHFLOOR - SPACING*DEFAULTSIZE;
+    public int SIXTHFLOOR = FIFTHFLOOR - SPACING*DEFAULTSIZE;
+    public JLabel[] ground;
+    public JLabel[] secondFloor;
+    public JLabel[] thirdFloor;
+    public JLabel[] fourthFloor;
+    public JLabel[] fifthFloor;
+    public JLabel[] sixthFloor;
     public JPanel panel;
-    public JButton employeesButton;
-    public JButton positionsButton;
-    public JButton payrollButton;
-    public JButton usersAdminButton;
-    public JButton accountButton;
-    public JLabel employeesLabel;
-    public JLabel positionsLabel;
-    public JLabel payrollLabel;
-    public JLabel usersAdminLabel;
-    public JLabel accountLabel;
     public BufferedImage iceIcon;
     public String background = "#5c5b85";
-    public String darkerButtonColor = "#46466b";
 
     Font font = new Font("Arial", Font.PLAIN, 16);
 
@@ -52,114 +51,104 @@ public class graphicUI extends JFrame implements MouseListener{
             e.printStackTrace();
         }
 
-        employeesButton = new JButton(new ImageIcon(iceIcon));
-        positionsButton = new JButton(new ImageIcon(iceIcon));
-        payrollButton = new JButton(new ImageIcon(iceIcon));
-        usersAdminButton = new JButton(new ImageIcon(iceIcon));
-        accountButton = new JButton(new ImageIcon(iceIcon));
+        secondFloor = buildFloor(SECONDFLOOR);
+        thirdFloor = buildFloor(THIRDFLOOR);
+        fourthFloor = buildFloor(FOURTHFLOOR);
+        fifthFloor = buildFloor(FIFTHFLOOR);
+        sixthFloor = buildFloor(SIXTHFLOOR);
+/*
 
-        employeesButton.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        positionsButton.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        payrollButton.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        usersAdminButton.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        accountButton.setSize(DEFAULTSIZE, DEFAULTSIZE);
-
-        employeesButton.setLocation(0, GROUND);
-        positionsButton.setLocation(0, SECONDFLOOR);
-        payrollButton.setLocation(0, THIRDLOOR);
-        accountButton.setLocation(0, FOURTHFLOOR);
-        usersAdminButton.setLocation(0, FIFTHFLOOR);
-
-        employeesButton.setBorder(BorderFactory.createEmptyBorder());
-        positionsButton.setBorder(BorderFactory.createEmptyBorder());
-        payrollButton.setBorder(BorderFactory.createEmptyBorder());
-        usersAdminButton.setBorder(BorderFactory.createEmptyBorder());
-        accountButton.setBorder(BorderFactory.createEmptyBorder());
-
-        /*employeesButton.setContentAreaFilled(false);
-        positionsButton.setContentAreaFilled(false);
-        payrollButton.setContentAreaFilled(false);
-        usersAdminButton.setContentAreaFilled(false);
-        accountButton.setContentAreaFilled(false);
-
-        employeesButton.setBackground(Color.decode(darkerButtonColor));
-        positionsButton.setBackground(Color.decode(darkerButtonColor));
-        payrollButton.setBackground(Color.decode(darkerButtonColor));
-        usersAdminButton.setBackground(Color.decode(darkerButtonColor));
-        accountButton.setBackground(Color.decode(darkerButtonColor));
-
-
-        employeesButton.addMouseListener(this);
-        positionsButton.addMouseListener(this);
-        payrollButton.addMouseListener(this);
-        usersAdminButton.addMouseListener(this);
-        accountButton.addMouseListener(this);*/
-
-        panel.add(employeesButton);
-        panel.add(positionsButton);
-        panel.add(payrollButton);
-        panel.add(accountButton);
-        panel.add(usersAdminButton);
-
-/*        if (!admin){ USAR PARA CLIENTE OBSERVADOR O JUGADOR
+       if (!admin){ USAR PARA CLIENTE OBSERVADOR O JUGADOR
             usersAdminButton.setEnabled(false);
-        } */
+        }
+*/
 
         this.panel.repaint();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
+
+    public JLabel[] buildFloor (int floorPosition){
+        Random rand = new Random();
+        JLabel[] floor = new JLabel[BLOCKS];
+        int blocksToFill = BLOCKS;
+        int beginningPosition = 0;
+        int randomLength = 0;
+        while (blocksToFill > 0){
+            if (blocksToFill < 8) {
+                randomLength = BLOCKS - blocksToFill - 1;
+            } else {
+                randomLength = rand.nextInt((blocksToFill/2 + beginningPosition + 3) + 1) + 3;
+                if ((randomLength + beginningPosition) > 24) {
+                    randomLength = BLOCKS - blocksToFill - 1;
+                }
+            }
+            System.out.println(randomLength);
+            for (int i = beginningPosition; i <= beginningPosition + randomLength; i++){
+                if (i < 24){
+                    JLabel newBlock = new JLabel(new ImageIcon(iceIcon));
+                    newBlock.setSize(DEFAULTSIZE, DEFAULTSIZE);
+                    newBlock.setLocation(i*DEFAULTSIZE, floorPosition);
+                    panel.add(newBlock);
+                    System.out.println(i);
+                    floor[i] = newBlock;
+                }
+            }
+            beginningPosition = beginningPosition + randomLength + 3;
+            blocksToFill = blocksToFill - beginningPosition;
+        }
+        return floor;
+    }
+
+    public void newFloors(){
+        deleteFLoor(ground);
+        deleteFLoor(secondFloor);
+        deleteFLoor(thirdFloor);
+        adjustYPos(GROUND, fourthFloor);
+        adjustYPos(SECONDFLOOR, fifthFloor);
+        adjustYPos(THIRDFLOOR, sixthFloor);
+        ground = fourthFloor;
+        secondFloor = fifthFloor;
+        thirdFloor = sixthFloor;
+        fourthFloor = buildFloor(FOURTHFLOOR);
+        fifthFloor = buildFloor(FIFTHFLOOR);
+        sixthFloor = buildFloor(SIXTHFLOOR);
+        this.panel.repaint();
+    }
+
+    public void adjustYPos(int floorPosition, JLabel[] floor){
+        try{
+            for(int i = 0; i < BLOCKS; i++){
+                floor[i].setLocation(floor[i].getX(), floorPosition);
+            }
+        } catch (Exception e){
+
+        }
+    }
+
+    public void deleteFLoor(JLabel[] floor){
+        try{
+            for(int i = 0; i < BLOCKS; i++){
+                this.remove(floor[i]);
+                this.revalidate();
+            }
+        } catch (Exception e){
+
+        }
+    }
+
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void keyTyped(KeyEvent keyEvent) {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
+    public void keyPressed(KeyEvent keyEvent) {
+        newFloors();
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void keyReleased(KeyEvent keyEvent) {
 
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        /*if (e.getSource() == employeesButton) {
-            employeesButton.setContentAreaFilled(true);
-
-        } else if (e.getSource() == positionsButton) {
-            positionsButton.setContentAreaFilled(true);
-
-        } else if (e.getSource() == payrollButton) {
-            payrollButton.setContentAreaFilled(true);
-
-        } else if (e.getSource() == usersAdminButton) {
-            usersAdminButton.setContentAreaFilled(true);
-
-        } else if (e.getSource() == accountButton) {
-            accountButton.setContentAreaFilled(true);
-        }*/
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        /*
-        if (e.getSource() == employeesButton) {
-            employeesButton.setContentAreaFilled(false);
-
-        } else if (e.getSource() == positionsButton) {
-            positionsButton.setContentAreaFilled(false);
-
-        } else if (e.getSource() == payrollButton) {
-            payrollButton.setContentAreaFilled(false);
-
-        } else if (e.getSource() == usersAdminButton) {
-            usersAdminButton.setContentAreaFilled(false);
-
-        } else if (e.getSource() == accountButton) {
-            accountButton.setContentAreaFilled(false);
-        }*/
     }
 }
