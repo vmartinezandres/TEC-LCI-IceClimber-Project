@@ -1,3 +1,5 @@
+package Client.src;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -57,11 +59,11 @@ public class graphicUI extends JFrame implements KeyListener {
         this.getContentPane().add(this.panel);
 
         try {
-            backgroundImage = ImageIO.read(getClass().getClassLoader().getResource("assets/background.png"));
-            iceIcon = ImageIO.read(getClass().getClassLoader().getResource("assets/ice.png"));
-            sealIcon = ImageIO.read(getClass().getClassLoader().getResource("assets/seall.png"));
-            birdIcon = ImageIO.read(getClass().getClassLoader().getResource("assets/birdl.png"));
-            playerIcon = ImageIO.read(getClass().getClassLoader().getResource("assets/right3.png"));
+            backgroundImage = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/background.png"));
+            iceIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/ice.png"));
+            sealIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/seall.png"));
+            birdIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/birdl.png"));
+            playerIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/right3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
