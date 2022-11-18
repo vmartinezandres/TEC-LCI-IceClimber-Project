@@ -41,7 +41,7 @@ public class SocketClient
     /*
      * Se encarga de inicializar el puesto y establecer la conexión con el server
      */
-    private void runClient()
+    public void runClient()
     {
         try
         {
@@ -78,7 +78,7 @@ public class SocketClient
     /*
      * Este método será utilizado para mandar el request de mensaje que el server necesita enviar
      */
-    public String sendRequest(String message)
+    public JSONObject sendRequest(String message)
     {
         try
         {
@@ -106,55 +106,23 @@ public class SocketClient
                 /* Toma el string de la clase DataSocket */
                 String responseToString = dato.d;
 
-                return responseToString;
+                return parseResponse(responseToString);
             }
             else
             {
-                return "";
+                return new JSONObject();
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return "";
+            return new JSONObject();
         }
     }
 
-    public JSONObject parseResponse(String message)
+    private JSONObject parseResponse(String message)
     {
         JSONObject json = new JSONObject(message);
-
-        System.out.println(json.getString("evento"));
-
-        JSONArray players = json.getJSONArray("jugadores");
-
-        int nJugadores = players.length();
-
-        System.out.println("número de jugadores "+ nJugadores);
-
-        for (int i = 0; i<nJugadores; i++)
-        {
-            JSONObject player = players.getJSONObject(i);
-
-            System.out.println("Id de jugador: " + player.getInt("id"));
-            System.out.println("coordenada en x: " + player.getInt("x"));
-            System.out.println("coordenada en y: " +player.getInt("y"));
-        }
-
-        JSONArray npcs = json.getJSONArray("npcs");
-
-        int nNpcs = npcs.length();
-
-        System.out.println("número de jugadores "+ nNpcs);
-
-        for (int i = 0; i<nNpcs; i++)
-        {
-            JSONObject npc = npcs.getJSONObject(i);
-
-            System.out.println("Id de npc: " + npc.getString("id"));
-            System.out.println("coordenada en x: " + npc.getInt("x"));
-            System.out.println("coordenada en y: " +npc.getInt("y"));
-        }
 
         return json;
     }

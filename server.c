@@ -55,7 +55,7 @@ struct messagePackage ReadParseJson(char *Data)
 	
 	nJugadores = json_object_array_length(players);
 
-	printf("Found %lu friends \n", nJugadores);
+	printf("Found %lu players \n", nJugadores);
 
 
 	/* 
@@ -165,7 +165,7 @@ main ()
 				// LOGICA PARA DAR RESPUESTA ...
 
 				char response[1024];
-				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}], \"npcs\": [{ \"id\": \"foca1\", \"x\":1, \"y\":2}, {\"id\":\"foca2\", \"x\":3, \"y\":4}]}");
+				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"jugador1\", \"x\":1, \"y\":2}, {\"id\":\"jugador2\", \"x\":3, \"y\":4}], \"npcs\": [{\"id\": \"foca1\", \"x\":1, \"y\":2}, {\"id\":\"foca2\", \"x\":3, \"y\":4}]}");
 
 				/*
 				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) 
