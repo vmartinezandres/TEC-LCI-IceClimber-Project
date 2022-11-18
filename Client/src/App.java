@@ -23,7 +23,8 @@ public class App {
         for (Enumeration k = npcs.keys(); k.hasMoreElements();)
         {
             Object key = k.nextElement();
-            System.out.println("Key in  : " + key + " => has value of x : " + npcs.get(key)[0] + " has a value of y: " + npcs.get(key)[1]);
+            String id = key.toString();
+            System.out.println("Key in  : " + id + " => has value of x : " + npcs.get(key)[0] + " has a value of y: " + npcs.get(key)[1]);
         }
 
         String message1 = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}]}";

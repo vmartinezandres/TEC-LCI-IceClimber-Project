@@ -5,26 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dff7779e-be00-455c-8831-9156ff6037b3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/assets/background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/birdl.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/birdr.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/ice.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/left1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/left2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/left3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/left4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/right1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/right2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/right3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/right4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/seall.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/assets/sealr.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/mainClass.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Client/Client/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../untitled/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../untitled/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphicUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mainClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mainClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server" beforeDir="false" afterPath="$PROJECT_DIR$/../server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +60,24 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="mainClass" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client.src.mainClass" />
+      <module name="Client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.src.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.mainClass" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
