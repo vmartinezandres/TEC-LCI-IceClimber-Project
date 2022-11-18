@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "socket.h": "c",
+        "string.h": "c"
+    },
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/home/diani/Documents/json-simple-1.1.1.jar"
+    ]
+}
