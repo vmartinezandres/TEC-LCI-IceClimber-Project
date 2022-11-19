@@ -36,6 +36,8 @@ char blockWidth = 40;
 // Global variables
 bool isStart = true;
 
+char numFloorsChanged = 0;
+
 char floors[4][25];
 
 struct Player sPlayers[2]; // Maximo 2 jugadores
@@ -237,7 +239,7 @@ void moveNPCs(void){
 }
 
 char* answerUpdate(void) {
-    char *response = "{ \"evento\" : \"update\", \"jugadores\" : [ ";
+    char response[1000] = "{ \"evento\" : \"update\", \"jugadores\" : [ ";
     for (char i = 0; i < numPlayers; i++) {
         strcat(response, "{ \"id\" : \"");
         strcat(response, sPlayers[i].name);
@@ -245,28 +247,28 @@ char* answerUpdate(void) {
 
         strcat(response, "\"x\" : ");
         char *x;
-        asprintf(&x, "%d", (short) sPlayers[i].xPos * blockWidth);
+        asprintf(&x, "%d", (short) (sPlayers[i].xPos * blockWidth));
         strcat(response, x);
         free(x);
         strcat(response, ", ");
         
         strcat(response, "\"y\" : ");
         char *y;
-        asprintf(&y, "%d", (short) sPlayers[i].yPos * blockWidth);
+        asprintf(&y, "%d", (short) (sPlayers[i].yPos * blockWidth));
         strcat(response, y);
         free(y);
         strcat(response, ", ");
         
         strcat(response, "\"lifes\" : ");
         char *lifes;
-        asprintf(&lifes, "%d", (short) sPlayers[i].lifes);
+        asprintf(&lifes, "%d", (short) (sPlayers[i].lifes));
         strcat(response, lifes);
         free(lifes);
         strcat(response, ", ");
         
         strcat(response, "\"points\" : ");
         char *points;
-        asprintf(&points, "%d", (short) sPlayers[i].points);
+        asprintf(&points, "%d", (short) (sPlayers[i].points));
         strcat(response, points);
         free(points);
         
@@ -285,14 +287,14 @@ char* answerUpdate(void) {
 
         strcat(response, "\"x\" : ");
         char *x;
-        asprintf(&x, "%d", (short) sNPCs[i].xPos * blockWidth);
+        asprintf(&x, "%d", (short) (sNPCs[i].xPos * blockWidth));
         strcat(response, x);
         free(x);
         strcat(response, ", ");
         
         strcat(response, "\"y\" : ");
         char *y;
-        asprintf(&y, "%d", (short) sNPCs[i].yPos * blockWidth);
+        asprintf(&y, "%d", (short) (sNPCs[i].yPos * blockWidth));
         strcat(response, y);
         free(y);
         
@@ -304,7 +306,9 @@ char* answerUpdate(void) {
     
     strcat(response, "]}");
    
-    return response;
+    char *pResponse = &response[0];
+    
+    return pResponse;
     
 }
 
@@ -343,35 +347,51 @@ void destroyBlockEvent(char iPlayer, char iFloor, char jBlock) {
     updatePlayer(sPlayers[iPlayer].xPos, sPlayers[iPlayer].yPos, sPlayers[iPlayer].level, sPlayers[iPlayer].lifes, sPlayers[iPlayer].points + 10, iPlayer);
 }
 
+void changeFloorsEvent(void){
+    numFloorsChanged++;
+    for (char i = 0; i < numNPCs; i++) {
+        updateNPC(sNPCs[i].xPos, sNPCs[i].yPos + 15, sNPCs[i].direction, sNPCs[i].moves, i);
+    }
+    
+    for (char i = 0; i < 0; i++) {
+        if(sPlayers[i].floor < 4){
+            updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
+        }
+    }
+    
+}
+
 char* receiveMessage(struct messageBox mb){
     float positions[2][2] = {
-        {mb.player1.x / blockWidth, mb.player1.y / blockWidth},
-        {mb.player2.x / blockWidth, mb.player2.y / blockWidth}
+        {(float) mb.player1.x / blockWidth, (float) mb.player1.y / blockWidth},
+        {(float) mb.player2.x / blockWidth, (float) mb.player2.y / blockWidth}
     };
-    
-    if(strcmp(mb.event, "update")){
-        if(isStart){
-            char nPlayers = 1;
-            if(mb.player2.id != NULL) nPlayers = 2;
-            createGame(nPlayers);
-            isStart = false;
-        }
-        else{
-            updateGame(positions);
-        }
+        
+    switch (mb.event[0]) {
+        case 'u':
+            if(isStart){
+                char nPlayers = 1;
+                if(mb.player2.id != NULL) nPlayers = 2;
+                createGame(nPlayers);
+                isStart = false;
+            }
+            else{
+                updateGame(positions);
+            }
+            break;
+            
+        case 's':
+            sledgehammerEvent(mb.player1.id[1] - 1);
+            break;
+            
+        case 'd':
+            destroyBlockEvent(mb.player1.id[1] - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
+            break;
+            
+        case 'c':
+            changeFloorsEvent();
+            break;
     }
-    
-    else if(strcmp(mb.event, "sledgehammer")){
-        sledgehammerEvent(mb.player1.id[1] - 1);
-    }
-    
-    else if(strcmp(mb.event, "destroyBlock")){
-        destroyBlockEvent(mb.player1.id[1] - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
-    }
-    
-//    else{
-//
-//    }
     
     return answerUpdate();
 }

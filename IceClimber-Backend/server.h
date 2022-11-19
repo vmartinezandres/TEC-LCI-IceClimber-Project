@@ -9,7 +9,7 @@ struct playerClient
     int y;
     int blockNumber;
     int floorNumber;
-    bool isFloorMoving;
+    int isFloorMoving;
 };
 
 /* Informacion que se recibe del cliente */
