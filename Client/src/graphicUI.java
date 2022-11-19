@@ -391,14 +391,21 @@ public class graphicUI extends JFrame implements KeyListener {
 
     public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2)
     {
-        String pointP1 = Integer.toString(points1);
-        String pointP2 = Integer.toString(points2);
-        String lifeP1 = Integer.toString(lifes1);
-        String lifeP2 = Integer.toString(lifes2);
-        this.lifeP1.setText(lifeP1);
-        this.lifeP2.setText(lifeP2);
-        this.pointsP1.setText(pointP1);
-        this.pointsP2.setText(pointP2);
+        if(this.totalPlayer == 2) {
+            String pointP1 = Integer.toString(points1);
+            String pointP2 = Integer.toString(points2);
+            String lifeP1 = Integer.toString(lifes1);
+            String lifeP2 = Integer.toString(lifes2);
+            this.lifeP1.setText(lifeP1);
+            this.lifeP2.setText(lifeP2);
+            this.pointsP1.setText(pointP1);
+            this.pointsP2.setText(pointP2);
+        }else {
+            String pointP1 = Integer.toString(points1);
+            String lifeP1 = Integer.toString(lifes1);
+            this.lifeP1.setText(lifeP1);
+            this.pointsP1.setText(pointP1);
+        }
 
         // Validar si tiene nuevas vidas o nuevos puntos
     }
