@@ -93,7 +93,7 @@ public class SocketClient
                 
                 aux.writeObject(request);
         
-                System.out.println ("Cliente Java: Enviado " + aux.toString());
+                // System.out.println ("Cliente Java: Enviado " + aux.toString());
         
                 /* Se obtiene un stream de lectura para leer objetos */
                 DataInputStream response = new DataInputStream (socket.getInputStream());

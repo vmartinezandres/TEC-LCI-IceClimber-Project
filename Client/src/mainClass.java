@@ -12,8 +12,6 @@ public class mainClass implements Runnable {
         mainClass.initilizeInterface();
         Thread thread1 = new Thread(mainClass);
         thread1.start();
-
-
     }
 
     public void initilizeInterface(){

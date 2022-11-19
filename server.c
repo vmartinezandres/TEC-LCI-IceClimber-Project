@@ -85,7 +85,6 @@ void createGame(char nPlyrs) {
     // NPCs
     createNPCs("S1", 1, 17, 0, 1);
     createNPCs("B1", 22, 1, 3*PI/4, 1);
-//    createNPCs("B2", 22, 1, 3*PI/4, 1);
 //    createNPCs("P1", 22, 1, 3*PI/2, 1);
 //    createNPCs("E1", 8, 17, 0, 1);
 
@@ -329,7 +328,6 @@ void sledgehammerEvent(char iPlayer){
             if( ( ((sPlayers[iPlayer].xPos + 2) > (sNPCs[i].xPos)) && ((sPlayers[iPlayer].xPos - 1) < (sNPCs[i].xPos + 1)) ) &&
                ( ((sPlayers[iPlayer].yPos + 2) > (sNPCs[i].yPos)) && ((sPlayers[iPlayer].yPos - 1) < (sNPCs[i].yPos +  1)) ) ) { // Hitbox
                 
-                printf("\nMe dieron!");
                 updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, PI - sNPCs[i].direction, sNPCs[i].moves, i);
                 
                 if (sNPCs[i].name[0] == 'S'){
@@ -358,8 +356,8 @@ void changeFloorsEvent(void){
         if(sPlayers[i].floor < 4){
             updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
         }
+        updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level + 1, sPlayers[i].lifes, sPlayers[i].points, i);
     }
-    
 }
 
 char* receiveMessage(struct messageBox mb){
@@ -382,11 +380,11 @@ char* receiveMessage(struct messageBox mb){
             break;
             
         case 's':
-            sledgehammerEvent(mb.player1.id[1] - 1);
+            sledgehammerEvent(atoi(&mb.player1.id[1]) - 1);
             break;
             
         case 'd':
-            destroyBlockEvent(mb.player1.id[1] - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
+            destroyBlockEvent(atoi(&mb.player1.id[1]) - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
             break;
             
         case 'c':
@@ -396,3 +394,4 @@ char* receiveMessage(struct messageBox mb){
     
     return answerUpdate();
 }
+

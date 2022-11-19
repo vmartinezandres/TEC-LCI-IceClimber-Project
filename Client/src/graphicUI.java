@@ -76,9 +76,9 @@ public class graphicUI extends JFrame implements KeyListener {
 
     public graphicUI() {
         this.setTitle("Ice Climber");
-        this.setVisible(true);
         this.setSize(WIDTH, HEIGHT);
         this.setResizable(false);
+        addKeyListener(this);
 
         // Inicializar panel
         panel = new JPanel();
@@ -184,7 +184,6 @@ public class graphicUI extends JFrame implements KeyListener {
         backgroundLabel.setSize(WIDTH, HEIGHT);
         backgroundLabel.setLocation(0, 0);
 
-
         //panel.add(backgroundLabel);
 
 
@@ -198,6 +197,7 @@ public class graphicUI extends JFrame implements KeyListener {
 */
 
         this.panel.repaint();
+        this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
@@ -274,7 +274,6 @@ public class graphicUI extends JFrame implements KeyListener {
     /* Toma los npcs que manda el servidor y lo actualiza en pantalla */
     public void updateNpcs(Dictionary<String, int[]> npcsServer)
     {
-        System.out.println("I am in update Npcs");
         // Coordenadas para npc
         int x;
         int y;
@@ -287,15 +286,15 @@ public class graphicUI extends JFrame implements KeyListener {
             y = npcsServer.get(keyId)[1];
 
             if(this.npcs.isEmpty()) {
-                System.out.println("Esta vacio, crear primer npc, el id es:  "+ id);
+                //System.out.println("Esta vacio, crear primer npc, el id es:  "+ id);
                 createNpc(id, x, y);
             } else if (isKeyPresent(id)) {
-                System.out.println("Update npc:  "+ id + " en las coordenadas ("+x+","+y+")");
+                //System.out.println("Update npc:  "+ id + " en las coordenadas ("+x+","+y+")");
                 this.npcs.get(keyId).setLocation(x, y);
                 this.panel.repaint();
             }
             else {
-                System.out.println("No hay un id. Entonces voy a crearlo el id es: "+ id);
+                //System.out.println("No hay un id. Entonces voy a crearlo el id es: "+ id);
                 createNpc(id, x, y);
             }
         }
@@ -321,7 +320,7 @@ public class graphicUI extends JFrame implements KeyListener {
         char identifier = id.charAt(0);
         switch (identifier) {
             case 'S': // Seals
-                System.out.println("Create seat at x="+x+" y="+y);
+                //System.out.println("Create seat at x="+x+" y="+y);
                 JLabel seal = new JLabel(new ImageIcon(sealIcon));
                 seal.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 seal.setLocation(x, y);
@@ -331,7 +330,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 this.npcs.put(id,seal);
                 break;
             case 'B': // Birds
-                System.out.println("Create bird at x="+x+" y="+y);
+                //System.out.println("Create bird at x="+x+" y="+y);
                 JLabel bird = new JLabel(new ImageIcon(birdIcon));
                 bird.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 bird.setLocation(x, y);
@@ -433,6 +432,9 @@ public class graphicUI extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        System.out.println("Estoy en evento");
+        this.player1.setLocation(840,700);
+        this.panel.repaint();
     }
 
     @Override
