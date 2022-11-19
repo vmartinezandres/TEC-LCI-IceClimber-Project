@@ -31,7 +31,7 @@ public class Client extends ResponseController implements Runnable {
         int blockNumber = 20;
         int floorNumber = 2;
         int isFloorMoving = 1;
-        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": \""+playerId+"\", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
@@ -65,7 +65,7 @@ public class Client extends ResponseController implements Runnable {
     @Override
     public void run() {
         int n = 0;
-        while (n <= 3)
+        while (n <= 100)
         {
             try {
                 Thread.sleep(250);
@@ -76,14 +76,15 @@ public class Client extends ResponseController implements Runnable {
             int blockNumber = 0;
             int floorNumber = 0;
             int isFloorMoving = 0;
-            clientInterface.updatePlayerCoords();
+            this.clientInterface.updatePlayerCoords();
             if(clientInterface.totalPlayer == 2){
-                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+ ", \"y\":"+this.clientInterface.playerCoordy1+"},{\"id\":\"P2\", \"x\":"+this.clientInterface.playerCoordx2+", \"y\":"+this.clientInterface.playerCoordy2+" ,\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+ ", \"y\":"+this.clientInterface.playerCoordy1+", \"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"},{\"id\":\"P2\", \"x\":"+this.clientInterface.playerCoordx2+", \"y\":"+this.clientInterface.playerCoordy2+" ,\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
             }else{
-                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"},]}";
             }
             JSONObject jsonResponse = client.sendRequest(message);
             update(jsonResponse);
+            sendSledgehammer();
             n++;
         }
     }

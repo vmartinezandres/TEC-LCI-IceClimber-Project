@@ -17,17 +17,15 @@ public class graphicUI extends JFrame implements KeyListener {
     private int LABELIN0ITIALPOSY = 0;
     private int LABELGAPRIGHT = 120;
     private int LABELGAPDOWN = 25;
-
     public int playerCoordx1;
     public int playerCoordy1;
     public int playerCoordx2;
     public int playerCoordy2;
-
     public int totalPlayer;
     public int BLOCKS = 24;
     public int DEFAULTSIZE = 40;
     public int SPACING = 5;
-    public int HEIGHT = BLOCKS*DEFAULTSIZE;
+    public int HEIGHT = BLOCKS*DEFAULTSIZE + DEFAULTSIZE;
     public int WIDTH = BLOCKS*DEFAULTSIZE;
     public int GROUND = HEIGHT - 2*DEFAULTSIZE;
     public int SECONDFLOOR = GROUND - SPACING*DEFAULTSIZE;
@@ -52,6 +50,8 @@ public class graphicUI extends JFrame implements KeyListener {
     JLabel backgroundLabel;
     JLabel player1;
     JLabel player2;
+    JLabel player1Label;
+    JLabel player2Label;
     JLabel lifeP1;
     JLabel lifeP2;
     JLabel pointsP1;
@@ -105,7 +105,7 @@ public class graphicUI extends JFrame implements KeyListener {
 
         this.player1 = new JLabel(new ImageIcon(playerIcon));
         player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-        player1.setLocation(0, GROUND - 2 * DEFAULTSIZE + SPACING);
+        player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
         panel.add(player1);
 
         this.player2 = new JLabel(new ImageIcon(playerIcon));
@@ -116,10 +116,10 @@ public class graphicUI extends JFrame implements KeyListener {
         updatePlayerCoords();
 
         // Iniciar labels para puntos y vidas
-        this.player1 = new JLabel("Jugador 1");
-        this.player1.setSize(LABELWIDTH, LABELHEIGHT);
-        this.player1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY);
-        this.panel.add(this.player1);
+        this.player1Label = new JLabel("Jugador 1");
+        this.player1Label.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player1Label.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY);
+        this.panel.add(this.player1Label);
 
         this.labelLifeP1 = new JLabel("Vida: ");
         this.labelLifeP1.setSize(LABELWIDTH,LABELHEIGHT);
@@ -141,10 +141,10 @@ public class graphicUI extends JFrame implements KeyListener {
         this.pointsP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
         this.panel.add(this.pointsP1);
 
-        this.player2 = new JLabel("Jugador 2");
-        this.player2.setSize(LABELWIDTH, LABELHEIGHT);
-        this.player2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY);
-        this.panel.add(this.player2);
+        this.player2Label = new JLabel("Jugador 2");
+        this.player2Label.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player2Label.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.player2Label);
 
         this.labelLifeP2 = new JLabel("Vida: ");
         this.labelLifeP2.setSize(LABELWIDTH,LABELHEIGHT);
@@ -165,6 +165,7 @@ public class graphicUI extends JFrame implements KeyListener {
         this.pointsP2.setSize(LABELWIDTH,LABELHEIGHT);
         this.pointsP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
         this.panel.add(this.pointsP2);
+
 
         // Inicializar los pisos
         ground = buildGround(GROUND);
@@ -289,7 +290,9 @@ public class graphicUI extends JFrame implements KeyListener {
                 System.out.println("Esta vacio, crear primer npc, el id es:  "+ id);
                 createNpc(id, x, y);
             } else if (isKeyPresent(id)) {
+                System.out.println("Update npc:  "+ id + " en las coordenadas ("+x+","+y+")");
                 this.npcs.get(keyId).setLocation(x, y);
+                this.panel.repaint();
             }
             else {
                 System.out.println("No hay un id. Entonces voy a crearlo el id es: "+ id);
