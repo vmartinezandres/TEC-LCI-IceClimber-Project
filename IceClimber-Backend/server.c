@@ -328,7 +328,6 @@ void sledgehammerEvent(char iPlayer){
             if( ( ((sPlayers[iPlayer].xPos + 2) > (sNPCs[i].xPos)) && ((sPlayers[iPlayer].xPos - 1) < (sNPCs[i].xPos + 1)) ) &&
                ( ((sPlayers[iPlayer].yPos + 2) > (sNPCs[i].yPos)) && ((sPlayers[iPlayer].yPos - 1) < (sNPCs[i].yPos +  1)) ) ) { // Hitbox
                 
-                printf("\nMe dieron!");
                 updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, PI - sNPCs[i].direction, sNPCs[i].moves, i);
                 
                 if (sNPCs[i].name[0] == 'S'){
@@ -381,11 +380,11 @@ char* receiveMessage(struct messageBox mb){
             break;
             
         case 's':
-            sledgehammerEvent(mb.player1.id[1] - 1);
+            sledgehammerEvent(atoi(&mb.player1.id[1]) - 1);
             break;
             
         case 'd':
-            destroyBlockEvent(mb.player1.id[1] - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
+            destroyBlockEvent(atoi(&mb.player1.id[1]) - 1, mb.player1.floorNumber - 1, mb.player1.blockNumber);
             break;
             
         case 'c':
