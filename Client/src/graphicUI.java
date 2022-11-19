@@ -17,11 +17,11 @@ public class graphicUI extends JFrame implements KeyListener {
     private int LABELIN0ITIALPOSY = 0;
     private int LABELGAPRIGHT = 120;
     private int LABELGAPDOWN = 25;
-    public int playerCoordx1;
-    public int playerCoordy1;
-    public int playerCoordx2;
-    public int playerCoordy2;
-    public int totalPlayer;
+    public int playerCoordx1 = 0;
+    public int playerCoordy1 = 0;
+    public int playerCoordx2 = 0;
+    public int playerCoordy2 = 0;
+    public int totalPlayer = 0;
     public int BLOCKS = 24;
     public int DEFAULTSIZE = 40;
     public int SPACING = 5;
@@ -46,6 +46,7 @@ public class graphicUI extends JFrame implements KeyListener {
     public JLabel[] fifthFloor;
     public JLabel[] subFifth;
     public Dictionary<String, JLabel> npcs;
+    public Dictionary<String, int[]> npcsServer;
     public JPanel panel;
     JLabel backgroundLabel;
     JLabel player1;
@@ -70,12 +71,16 @@ public class graphicUI extends JFrame implements KeyListener {
     public BufferedImage eggplantIcon;
     public BufferedImage lettuceIcon;
     public BufferedImage playerIcon;
+    public String typeInterface;
+    public Client client;
     public String background = "#5c5b85";
 
     Font font = new Font("Arial", Font.PLAIN, 16);
 
-    public graphicUI() {
-        this.setTitle("Ice Climber");
+    public graphicUI(String typeInterface, int players) {
+        this.typeInterface = typeInterface;
+        this.totalPlayer = players;
+        this.setTitle("Ice Climber " + typeInterface);
         this.setSize(WIDTH, HEIGHT);
         this.setResizable(false);
         addKeyListener(this);
@@ -101,17 +106,23 @@ public class graphicUI extends JFrame implements KeyListener {
         this.npcs = new Hashtable();
 
         // Inicializar jugadores
-        this.totalPlayer = 2;
 
-        this.player1 = new JLabel(new ImageIcon(playerIcon));
-        player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-        player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
-        panel.add(player1);
+        if(this.totalPlayer == 2){
+            this.player1 = new JLabel(new ImageIcon(playerIcon));
+            player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
+            panel.add(player1);
 
-        this.player2 = new JLabel(new ImageIcon(playerIcon));
-        player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-        player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING*2);
-        panel.add(player2);
+            this.player2 = new JLabel(new ImageIcon(playerIcon));
+            player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING*2);
+            panel.add(player2);
+        }else {
+            this.player1 = new JLabel(new ImageIcon(playerIcon));
+            player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
+            panel.add(player1);
+        }
 
         updatePlayerCoords();
 
@@ -201,6 +212,9 @@ public class graphicUI extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
+    public void setClient(Client client){
+        this.client = client;
+    }
 
     public JLabel[] buildFloor (int floorPosition){
         Random rand = new Random();
@@ -274,6 +288,7 @@ public class graphicUI extends JFrame implements KeyListener {
     /* Toma los npcs que manda el servidor y lo actualiza en pantalla */
     public void updateNpcs(Dictionary<String, int[]> npcsServer)
     {
+        this.npcsServer = npcsServer;
         // Coordenadas para npc
         int x;
         int y;
@@ -298,6 +313,13 @@ public class graphicUI extends JFrame implements KeyListener {
                 createNpc(id, x, y);
             }
         }
+    }
+
+    /*Esto es solo para cliente observador*/
+    public void updatePlayer(int x1, int x2, int y1, int y2)
+    {
+        this.player1.setLocation(x1,y1);
+        this.player2.setLocation(x2,y2);
     }
 
     /* Revisa si ya existe el id de los npcs, y si no existe retorna True*/
@@ -411,6 +433,21 @@ public class graphicUI extends JFrame implements KeyListener {
 
         // Validar si tiene nuevas vidas o nuevos puntos
     }
+
+    public void updatePointsAndLifesInObserver(String points1, String points2, String lifes1, String lifes2)
+    {
+        if(this.totalPlayer == 2) {
+            this.lifeP1.setText(lifes1);
+            this.lifeP2.setText(lifes2);
+            this.pointsP1.setText(points1);
+            this.pointsP2.setText(points2);
+        }else {
+            this.lifeP1.setText(lifes1);
+            this.pointsP1.setText(points1);
+        }
+
+        // Validar si tiene nuevas vidas o nuevos puntos
+    }
     public void updatePlayerCoords()
     {
         if(this.totalPlayer == 2) {
@@ -432,13 +469,30 @@ public class graphicUI extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        System.out.println("Estoy en evento");
-        this.player1.setLocation(840,700);
-        this.panel.repaint();
+
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
+        if(this.typeInterface != "Observer"){
+            if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
+                player1.setLocation(800,800);
+            } else if (keyEvent.getKeyChar() == 'A') { // mover a la izquierda para jugador 1
+
+            } else if (keyEvent.getKeyChar() == 'D') { // mover a la derecha para jugador 1
+
+            } else if (keyEvent.getKeyChar() == 'S') { // Para funcion martillo de jugador 1
+
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
+
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_LEFT) { // Mover a la izquierda jugador 2
+
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
+
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
+
+            }
+        }
 
     }
 }
