@@ -164,8 +164,9 @@ main ()
 
 				// LOGICA PARA DAR RESPUESTA ...
 
+
 				char response[1024];
-				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"jugador1\", \"x\":1, \"y\":2}, {\"id\":\"jugador2\", \"x\":3, \"y\":4}], \"npcs\": [{\"id\": \"S1\", \"x\":30, \"y\":20}, {\"id\":\"B1\", \"x\":150, \"y\":150}, {\"id\": \"S2\", \"x\":10, \"y\":2}, {\"id\":\"B2\", \"x\":200, \"y\":300}, {\"id\":\"B3\", \"x\":3, \"y\":10}]}");
+				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":1, \"y\":2, \"lifes\": 3, \"points\": 100}, {\"id\":\"P2\", \"x\":3, \"y\":4, \"lifes\": 3, \"points\": 100}], \"npcs\": [{\"id\": \"S1\", \"x\":30, \"y\":20}, {\"id\":\"B1\", \"x\":150, \"y\":150}, {\"id\": \"S2\", \"x\":10, \"y\":2}, {\"id\":\"B2\", \"x\":200, \"y\":300}, {\"id\":\"B3\", \"x\":3, \"y\":10}]}");
 
 				/*
 				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) 

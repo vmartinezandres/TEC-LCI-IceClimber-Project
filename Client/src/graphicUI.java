@@ -5,14 +5,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class graphicUI extends JFrame implements KeyListener {
+
+    private int LABELWIDTH = 100;
+    private int LABELHEIGHT = 20;
+    private  int LABELINITIALPOSX = 10;
+    private int LABELIN0ITIALPOSY = 0;
+    private int LABELGAPRIGHT = 120;
+    private int LABELGAPDOWN = 25;
+
+    public int playerCoordx1;
+    public int playerCoordy1;
+    public int playerCoordx2;
+    public int playerCoordy2;
+
+    public int totalPlayer;
     public int BLOCKS = 24;
     public int DEFAULTSIZE = 40;
     public int SPACING = 5;
@@ -39,6 +50,16 @@ public class graphicUI extends JFrame implements KeyListener {
     public Dictionary<String, JLabel> npcs;
     public JPanel panel;
     JLabel backgroundLabel;
+    JLabel player1;
+    JLabel player2;
+    JLabel lifeP1;
+    JLabel lifeP2;
+    JLabel pointsP1;
+    JLabel pointsP2;
+    JLabel labelLifeP1;
+    JLabel labelLifeP2;
+    JLabel labelPointP1;
+    JLabel labelPointP2;
     public BufferedImage backgroundImage;
     public BufferedImage iceIcon;
     public BufferedImage sealIcon;
@@ -59,11 +80,13 @@ public class graphicUI extends JFrame implements KeyListener {
         this.setSize(WIDTH, HEIGHT);
         this.setResizable(false);
 
+        // Inicializar panel
         panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(Color.decode(background));
         this.getContentPane().add(this.panel);
 
+        // Creación de las imágenes que se van a utilizar
         try {
             backgroundImage = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/background.png"));
             iceIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/ice.png"));
@@ -74,26 +97,76 @@ public class graphicUI extends JFrame implements KeyListener {
             e.printStackTrace();
         }
 
-        JLabel newSeal = new JLabel(new ImageIcon(sealIcon));
-        newSeal.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        newSeal.setLocation(0, FOURTHFLOOR - DEFAULTSIZE + SPACING);
-        panel.add(newSeal);
-
+        // Inicializar diccionario con npcs
         this.npcs = new Hashtable();
-        this.npcs.put("S1", newSeal);
 
-        JLabel newPlayer = new JLabel(new ImageIcon(playerIcon));
-        newPlayer.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-        newPlayer.setLocation(0, GROUND - 2 * DEFAULTSIZE + SPACING);
-        panel.add(newPlayer);
+        // Inicializar jugadores
+        this.totalPlayer = 2;
 
-        JLabel newBird = new JLabel(new ImageIcon(birdIcon));
-        newBird.setSize(DEFAULTSIZE, DEFAULTSIZE);
-        newBird.setLocation(0, FIFTHFLOOR - DEFAULTSIZE + SPACING);
-        panel.add(newBird);
+        this.player1 = new JLabel(new ImageIcon(playerIcon));
+        player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+        player1.setLocation(0, GROUND - 2 * DEFAULTSIZE + SPACING);
+        panel.add(player1);
 
-        this.npcs.put("B2", newBird);
+        this.player2 = new JLabel(new ImageIcon(playerIcon));
+        player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+        player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING*2);
+        panel.add(player2);
 
+        updatePlayerCoords();
+
+        // Iniciar labels para puntos y vidas
+        this.player1 = new JLabel("Jugador 1");
+        this.player1.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY);
+        this.panel.add(this.player1);
+
+        this.labelLifeP1 = new JLabel("Vida: ");
+        this.labelLifeP1.setSize(LABELWIDTH,LABELHEIGHT);
+        this.labelLifeP1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY + LABELGAPDOWN);
+        this.panel.add(this.labelLifeP1);
+
+        this.lifeP1 = new JLabel("0");
+        this.lifeP1.setSize(LABELWIDTH,LABELHEIGHT);
+        this.lifeP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN);
+        this.panel.add(this.lifeP1);
+
+        this.labelPointP1 = new JLabel("Puntos: ");
+        this.labelPointP1.setSize(LABELWIDTH,LABELHEIGHT);
+        this.labelPointP1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
+        this.panel.add(this.labelPointP1);
+
+        this.pointsP1 = new JLabel("0");
+        this.pointsP1.setSize(LABELWIDTH,LABELHEIGHT);
+        this.pointsP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
+        this.panel.add(this.pointsP1);
+
+        this.player2 = new JLabel("Jugador 2");
+        this.player2.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.player2);
+
+        this.labelLifeP2 = new JLabel("Vida: ");
+        this.labelLifeP2.setSize(LABELWIDTH,LABELHEIGHT);
+        this.labelLifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY + LABELGAPDOWN);
+        this.panel.add(this.labelLifeP2);
+
+        this.lifeP2 = new JLabel("");
+        this.lifeP2.setSize(LABELWIDTH,LABELHEIGHT);
+        this.lifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2 ,LABELIN0ITIALPOSY + LABELGAPDOWN);
+        this.panel.add(this.lifeP2);
+
+        this.labelPointP2 = new JLabel("Puntos: ");
+        this.labelPointP2.setSize(LABELWIDTH,LABELHEIGHT);
+        this.labelPointP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT ,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
+        this.panel.add(this.labelPointP2);
+
+        this.pointsP2 = new JLabel("0");
+        this.pointsP2.setSize(LABELWIDTH,LABELHEIGHT);
+        this.pointsP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
+        this.panel.add(this.pointsP2);
+
+        // Inicializar los pisos
         ground = buildGround(GROUND);
         secondFloor = buildGround(SECONDFLOOR);
         subSecond = buildFloor(SUBSECOND);
@@ -105,11 +178,13 @@ public class graphicUI extends JFrame implements KeyListener {
         subFifth = buildFloor(SUBFIFTH);
 
 
-
+        // Imagen de fondo
         backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
         backgroundLabel.setSize(WIDTH, HEIGHT);
         backgroundLabel.setLocation(0, 0);
         this.add(backgroundLabel);
+
+
         //panel.add(backgroundLabel);
 
 
@@ -212,6 +287,7 @@ public class graphicUI extends JFrame implements KeyListener {
             y = npcsServer.get(keyId)[1];
 
             if(this.npcs.isEmpty()) {
+                System.out.println("Esta vacio, crear primer npc, el id es:  "+ id);
                 createNpc(id, x, y);
             } else if (isKeyPresent(id)) {
                 this.npcs.get(keyId).setLocation(x, y);
@@ -311,6 +387,33 @@ public class graphicUI extends JFrame implements KeyListener {
                 this.npcs.put(id,lettuce);
                 this.panel.repaint();
                 break;
+        }
+    }
+
+    public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2)
+    {
+        String pointP1 = Integer.toString(points1);
+        String pointP2 = Integer.toString(points2);
+        String lifeP1 = Integer.toString(lifes1);
+        String lifeP2 = Integer.toString(lifes2);
+        this.lifeP1.setText(lifeP1);
+        this.lifeP2.setText(lifeP2);
+        this.pointsP1.setText(pointP1);
+        this.pointsP2.setText(pointP2);
+
+        // Validar si tiene nuevas vidas o nuevos puntos
+    }
+    public void updatePlayerCoords()
+    {
+        if(this.totalPlayer == 2) {
+            this.playerCoordx1 = this.player1.getX();
+            this.playerCoordy1 = this.player1.getY();
+            this.playerCoordx2 = this.player2.getX();
+            this.playerCoordy2 = this.player2.getY();
+        }
+        else{
+            this.playerCoordx1 = this.player1.getX();
+            this.playerCoordy1 = this.player1.getY();
         }
     }
 

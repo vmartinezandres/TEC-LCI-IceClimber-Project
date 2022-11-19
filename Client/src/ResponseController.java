@@ -30,22 +30,26 @@ public class ResponseController {
     /*
      * Leer el objeto Json y obtiene un diccionario con el ID del npc y las coordenadas en las que se encuentra
      * */
-    public Dictionary<String, int[]> getPlayers(JSONObject json)
+    public int getPlayersLifes(JSONObject json, int jugador)
     {
-        Dictionary playersDictionary = new Hashtable();
-
         JSONArray players = json.getJSONArray("jugadores");
 
-        int nJugadores = players.length();
+        JSONObject player = players.getJSONObject(jugador - 1);
 
-        for (int i = 0; i<nJugadores; i++)
-        {
-            JSONObject player = players.getJSONObject(i);
-            playersDictionary.put(player.getString("id"), new int[]{player.getInt("x"), player.getInt("y")});
+        int lifes = player.getInt("lifes");
 
-        }
+        return  lifes;
+    }
 
-        return  playersDictionary;
+    public int getPlayersPoints(JSONObject json, int jugador)
+    {
+        JSONArray players = json.getJSONArray("jugadores");
+
+        JSONObject player = players.getJSONObject(jugador - 1);
+
+        int lifes = player.getInt("points");
+
+        return  lifes;
     }
 
 }
