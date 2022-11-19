@@ -21,13 +21,43 @@ public class Client extends ResponseController implements Runnable {
         client.runClient();
         Thread thread = new Thread(this);
         thread.run();
-        String message = "{\"evento\": \"masazo\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}";
+    }
+    public void sendSledgehammer()
+    {
+        String event = "sledgehammer";
+        String playerId = "P1";
+        int playerCoordx = this.clientInterface.playerCoordx1;
+        int playerCoordy = this.clientInterface.playerCoordy1;
+        int blockNumber = 20;
+        int floorNumber = 2;
+        int isFloorMoving = 1;
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
-    public void sendMessage(String evento)
+    public void sendDestroyBlock()
     {
-        String message = "{\"evento\": \""+evento+"\", \"jugadores\": [{ \"id\": 1, \"x\":1, \"y\":2}, {\"id\":2, \"x\":3, \"y\":4}]}";
+        String event = "destroyBlock";
+        String playerId = "P1";
+        int playerCoordx = this.clientInterface.playerCoordx1;
+        int playerCoordy = this.clientInterface.playerCoordy1;
+        int blockNumber = 20;
+        int floorNumber = 2;
+        int isFloorMoving = 0;
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+        JSONObject jsonResponse = client.sendRequest(message);
+        update(jsonResponse);
+    }
+    public void sendChangeFloors()
+    {
+        String event = "changeFloors";
+        String playerId = "P1";
+        int playerCoordx = this.clientInterface.playerCoordx1;
+        int playerCoordy = this.clientInterface.playerCoordy1;
+        int blockNumber = 20;
+        int floorNumber = 2;
+        int isFloorMoving = 1;
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
@@ -43,16 +73,19 @@ public class Client extends ResponseController implements Runnable {
                 throw new RuntimeException(e);
             }
             String message;
+            int blockNumber = 0;
+            int floorNumber = 0;
+            int isFloorMoving = 0;
+            clientInterface.updatePlayerCoords();
             if(clientInterface.totalPlayer == 2){
-                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+ ", \"y\":"+this.clientInterface.playerCoordy1+"},{\"id\":\"P2\", \"x\":"+this.clientInterface.playerCoordx2+", \"y\":"+this.clientInterface.playerCoordy2+"}]}";
+                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+ ", \"y\":"+this.clientInterface.playerCoordy1+"},{\"id\":\"P2\", \"x\":"+this.clientInterface.playerCoordx2+", \"y\":"+this.clientInterface.playerCoordy2+" ,\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
             }else{
-                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+"}]}";
+                message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
             }
             JSONObject jsonResponse = client.sendRequest(message);
             update(jsonResponse);
             n++;
         }
-
     }
 
     public void update(JSONObject jsonResponse)

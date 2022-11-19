@@ -8,10 +8,13 @@ struct playerClient
 	char* id;
 	int x;
 	int y;
+    int blockNumber;
+    int floorNumber;
+    int isFloorMoving;
 };
 
 /* Informacion que se recibe del cliente */
-typedef struct messageBox
+struct messageBox
 {
 	char *event;
 	struct playerClient player1;
@@ -19,6 +22,6 @@ typedef struct messageBox
 	
 };
 
-
+char* receiveMessage(struct messageBox mb);
 
 #endif

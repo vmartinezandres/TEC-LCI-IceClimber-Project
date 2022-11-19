@@ -151,7 +151,7 @@ public class graphicUI extends JFrame implements KeyListener {
         this.labelLifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY + LABELGAPDOWN);
         this.panel.add(this.labelLifeP2);
 
-        this.lifeP2 = new JLabel("");
+        this.lifeP2 = new JLabel("0");
         this.lifeP2.setSize(LABELWIDTH,LABELHEIGHT);
         this.lifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2 ,LABELIN0ITIALPOSY + LABELGAPDOWN);
         this.panel.add(this.lifeP2);
@@ -182,7 +182,6 @@ public class graphicUI extends JFrame implements KeyListener {
         backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
         backgroundLabel.setSize(WIDTH, HEIGHT);
         backgroundLabel.setLocation(0, 0);
-        this.add(backgroundLabel);
 
 
         //panel.add(backgroundLabel);
@@ -324,9 +323,9 @@ public class graphicUI extends JFrame implements KeyListener {
                 seal.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 seal.setLocation(x, y);
                 this.panel.add(seal);
-                this.npcs.put(id,seal);
-                this.panel.revalidate();
                 this.panel.repaint();
+                this.panel.revalidate();
+                this.npcs.put(id,seal);
                 break;
             case 'B': // Birds
                 System.out.println("Create bird at x="+x+" y="+y);
@@ -334,9 +333,9 @@ public class graphicUI extends JFrame implements KeyListener {
                 bird.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 bird.setLocation(x, y);
                 this.panel.add(bird);
-                this.npcs.put(id,bird);
-                this.panel.revalidate();
                 this.panel.repaint();
+                this.panel.revalidate();
+                this.npcs.put(id,bird);
                 break;
             case 'P': // Picos
                 System.out.println("Create pico at x="+x+" y="+y);
