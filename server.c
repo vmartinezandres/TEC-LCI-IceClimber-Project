@@ -6,27 +6,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <json-c/json.h>
+#include "server.h"
 
-/* Informacion sobre jugadors*/
-struct player
-{
-	char* id;
-	int x;
-	int y;
-};
 
-/* Informacion que se recibe del cliente */
-typedef struct messagePackage
-{
-	char *event;
-	struct player player1;
-	struct player player2;
-	
-};
- 
+
 /* Esta función se encarga de leer el request que se recibe del cliente 
    y convertirlo en un struct de tipo json_object*/
-struct messagePackage ReadParseJson(char *Data)
+struct messageBox ReadParseJson(char *Data)
 {
 	
 	struct json_object *json;
@@ -36,9 +22,9 @@ struct messagePackage ReadParseJson(char *Data)
 	struct json_object *idPlayer;
 	struct json_object *xCoordenate;
 	struct json_object *yCoordanate;
-	struct messagePackage parseMessage;
-	struct player player1;
-	struct player player2;
+	struct messageBox parseMessage;
+	struct playerClient player1;
+	struct playerClient player2;
 	
 	size_t nJugadores;
 	size_t i;
@@ -160,13 +146,12 @@ main ()
 				printf ("Servidor C: Recibido %s\n", Cadena);
 
 
-				struct messagePackage mes = ReadParseJson(Cadena);
+				struct messageBox mes = ReadParseJson(Cadena);
 
 				// LOGICA PARA DAR RESPUESTA ...
 
-
 				char response[1024];
-				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":1, \"y\":2, \"lifes\": 3, \"points\": 100}, {\"id\":\"P2\", \"x\":3, \"y\":4, \"lifes\": 3, \"points\": 100}], \"npcs\": [{\"id\": \"S1\", \"x\":30, \"y\":20}, {\"id\":\"B1\", \"x\":150, \"y\":150}, {\"id\": \"S2\", \"x\":10, \"y\":2}, {\"id\":\"B2\", \"x\":200, \"y\":300}, {\"id\":\"B3\", \"x\":3, \"y\":10}]}");
+				strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":1, \"y\":2, \"lifes\": 3, \"points\": 100}, {\"id\":\"P2\", \"x\":3, \"y\":4, \"lifes\": 3, \"points\": 100}], \"npcs\": [{\"id\": \"S1\", \"x\":30, \"y\":20}, {\"id\":\"B1\", \"x\":150, \"y\":150}, {\"id\": \"S2\", \"x\":250, \"y\":100}, {\"id\":\"B2\", \"x\":200, \"y\":300}, {\"id\":\"B3\", \"x\":189, \"y\":10}]}");
 
 				/*
 				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) 
