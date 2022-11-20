@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dff7779e-be00-455c-8831-9156ff6037b3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ClientObserver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/StartGameUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/infoPackage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphicUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mainClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +61,7 @@
       <recent name="Client.src" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.App">
+  <component name="RunManager" selected="Application.Game">
     <configuration name="App" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Client.src.App" />
       <module name="Client" />
@@ -107,7 +104,7 @@
       <updated>1668652987838</updated>
       <workItem from="1668886398447" duration="154000" />
       <workItem from="1668886568185" duration="304000" />
-      <workItem from="1668886929255" duration="11252000" />
+      <workItem from="1668886929255" duration="13381000" />
     </task>
     <servers />
   </component>

@@ -22,9 +22,11 @@ public class graphicUI extends JFrame implements KeyListener {
     public int playerCoordx2 = 0;
     public int playerCoordy2 = 0;
     public int totalPlayer = 0;
+    public int isFloorMoving = 0;
     public int BLOCKS = 24;
     public int DEFAULTSIZE = 40;
     public int SPACING = 5;
+    public int MOVEMENT = 5;
     public int HEIGHT = BLOCKS*DEFAULTSIZE + DEFAULTSIZE;
     public int WIDTH = BLOCKS*DEFAULTSIZE;
     public int GROUND = HEIGHT - 2*DEFAULTSIZE;
@@ -469,30 +471,57 @@ public class graphicUI extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        if(this.typeInterface != "Observer"){
+            infoPackage i = new infoPackage();
+            if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
 
+            } else if (keyEvent.getKeyChar() == 'a') { // mover a la izquierda para jugador 1
+                playerMovingLeft(this.player1);
+            } else if (keyEvent.getKeyChar() == 'd') { // mover a la derecha para jugador 1
+                playerMovingRight(this.player1);
+            } else if (keyEvent.getKeyChar() == 's') { // Para funcion martillo de jugador 1
+                i.event = "sledgehammer";
+                i.playerId = "P1";
+                i.blockNumber = 0;
+                i.floorNumber = 0;
+                i.isFloorMoving = 0;
+                i.playerCoordx = this.playerCoordx1;
+                i.playerCoordy = this.playerCoordy1;
+                this.client.sendSledgehammer(i);
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
+
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_LEFT) { // Mover a la izquierda jugador 2
+                playerMovingLeft(this.player2);
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
+                playerMovingRight(this.player2);
+            } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
+                i.event = "sledgehammer";
+                i.playerId = "P1";
+                i.blockNumber = 0;
+                i.floorNumber = 0;
+                i.isFloorMoving = 0;
+                i.playerCoordx = this.playerCoordx1;
+                i.playerCoordy = this.playerCoordy1;
+                this.client.sendSledgehammer(i);
+            }
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-        if(this.typeInterface != "Observer"){
-            if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
-                player1.setLocation(800,800);
-            } else if (keyEvent.getKeyChar() == 'A') { // mover a la izquierda para jugador 1
-
-            } else if (keyEvent.getKeyChar() == 'D') { // mover a la derecha para jugador 1
-
-            } else if (keyEvent.getKeyChar() == 'S') { // Para funcion martillo de jugador 1
-
-            } else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
-
-            } else if (keyEvent.getKeyCode() == keyEvent.VK_LEFT) { // Mover a la izquierda jugador 2
-
-            } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
-
-            } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
-
-            }
-        }
 
     }
+    private void playerMovingRight(JLabel player){
+        int newx = player.getX() + MOVEMENT;
+        int newy = player.getY();
+        if(newx < WIDTH - DEFAULTSIZE)
+            player.setLocation(newx, newy);
+    }
+    private void playerMovingLeft(JLabel player){
+        int newx = player.getX() - MOVEMENT;
+        int newy = player.getY();
+        if(newx > DEFAULTSIZE)
+            player.setLocation(newx, newy);
+    }
+
 }
