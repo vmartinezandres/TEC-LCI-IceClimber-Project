@@ -22,14 +22,12 @@ public class Client extends ResponseController implements Runnable {
         Thread thread = new Thread(this);
         thread.run();
     }
-    public void sendSledgehammer(infoPackage i)
-    {
+    public void sendSledgehammer(infoPackage i) throws InterruptedException {
         String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
-    public void sendDestroyBlock()
-    {
+    public void sendDestroyBlock() throws InterruptedException {
         String event = "destroyBlock";
         String playerId = "P1";
         int playerCoordx = this.clientInterface.playerCoordx1;
@@ -41,8 +39,7 @@ public class Client extends ResponseController implements Runnable {
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
-    public void sendChangeFloors()
-    {
+    public void sendChangeFloors() throws InterruptedException {
         String event = "changeFloors";
         String playerId = "P1";
         int playerCoordx = this.clientInterface.playerCoordx1;
@@ -76,13 +73,16 @@ public class Client extends ResponseController implements Runnable {
                 message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"},]}";
             }
             JSONObject jsonResponse = client.sendRequest(message);
-            update(jsonResponse);
+            try {
+                update(jsonResponse);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             n++;
         }
     }
 
-    public void update(JSONObject jsonResponse)
-    {
+    public void update(JSONObject jsonResponse) throws InterruptedException {
         Dictionary<String, int[]> npcs = getNpcs(jsonResponse);
         int pointP1 = getPlayersPoints(jsonResponse, 1);
         int pointP2 = getPlayersPoints(jsonResponse, 2);

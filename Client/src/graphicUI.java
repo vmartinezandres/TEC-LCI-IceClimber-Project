@@ -57,6 +57,10 @@ public class graphicUI extends JFrame implements KeyListener {
     JLabel player2Label;
     JLabel lifeP1;
     JLabel lifeP2;
+    public int lifeP1int = 0;
+    public int lifeP2int = 0;
+    public int pointsP1int = 0;
+    public int pointsP2int = 0;
     JLabel pointsP1;
     JLabel pointsP2;
     JLabel labelLifeP1;
@@ -72,7 +76,11 @@ public class graphicUI extends JFrame implements KeyListener {
     public BufferedImage bananaIcon;
     public BufferedImage eggplantIcon;
     public BufferedImage lettuceIcon;
-    public BufferedImage playerIcon;
+    public BufferedImage player1Icon;
+    public BufferedImage player2Icon;
+    public BufferedImage fireIcon;
+    public BufferedImage hammerIcon;
+
     public String typeInterface;
     public Client client;
     public String background = "#5c5b85";
@@ -99,7 +107,15 @@ public class graphicUI extends JFrame implements KeyListener {
             iceIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/ice.png"));
             sealIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/seall.png"));
             birdIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/birdl.png"));
-            playerIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/right3.png"));
+            picoIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/hielo.png"));
+            player1Icon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/right1.png"));
+            player2Icon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/right3.png"));
+            fireIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/fuego.png"));
+            hammerIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/hammer.png"));
+            lettuceIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/lettuce.png"));
+            bananaIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/banana.png"));
+            orangeIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/orange.png"));
+            eggplantIcon = ImageIO.read(getClass().getClassLoader().getResource("Client/src/assets/eggplant.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,17 +126,17 @@ public class graphicUI extends JFrame implements KeyListener {
         // Inicializar jugadores
 
         if(this.totalPlayer == 2){
-            this.player1 = new JLabel(new ImageIcon(playerIcon));
+            this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
             player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
             panel.add(player1);
 
-            this.player2 = new JLabel(new ImageIcon(playerIcon));
+            this.player2 = new JLabel(new ImageIcon(player2Icon));
             player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
             player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING*2);
             panel.add(player2);
         }else {
-            this.player1 = new JLabel(new ImageIcon(playerIcon));
+            this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
             player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
             panel.add(player1);
@@ -415,18 +431,27 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
 
-    public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2)
-    {
+    public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2) throws InterruptedException {
         if(this.totalPlayer == 2) {
             String pointP1 = Integer.toString(points1);
             String pointP2 = Integer.toString(points2);
             String lifeP1 = Integer.toString(lifes1);
             String lifeP2 = Integer.toString(lifes2);
+            if(lifes1 == 0)
+            {
+                die(1);
+            }
+            if(lifes2 == 0)
+            {
+                die(2);
+            }
             this.lifeP1.setText(lifeP1);
             this.lifeP2.setText(lifeP2);
             this.pointsP1.setText(pointP1);
             this.pointsP2.setText(pointP2);
         }else {
+            this.lifeP1int = lifes1;
+            this.pointsP1int = points1;
             String pointP1 = Integer.toString(points1);
             String lifeP1 = Integer.toString(lifes1);
             this.lifeP1.setText(lifeP1);
@@ -473,9 +498,7 @@ public class graphicUI extends JFrame implements KeyListener {
     public void keyPressed(KeyEvent keyEvent) {
         if(this.typeInterface != "Observer"){
             infoPackage i = new infoPackage();
-            if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
-
-            } else if (keyEvent.getKeyChar() == 'a') { // mover a la izquierda para jugador 1
+            if (keyEvent.getKeyChar() == 'a') { // mover a la izquierda para jugador 1
                 playerMovingLeft(this.player1);
             } else if (keyEvent.getKeyChar() == 'd') { // mover a la derecha para jugador 1
                 playerMovingRight(this.player1);
@@ -487,30 +510,44 @@ public class graphicUI extends JFrame implements KeyListener {
                 i.isFloorMoving = 0;
                 i.playerCoordx = this.playerCoordx1;
                 i.playerCoordy = this.playerCoordy1;
-                this.client.sendSledgehammer(i);
-            } else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
-
+                try {
+                    this.client.sendSledgehammer(i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             } else if (keyEvent.getKeyCode() == keyEvent.VK_LEFT) { // Mover a la izquierda jugador 2
                 playerMovingLeft(this.player2);
             } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
                 playerMovingRight(this.player2);
             } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
                 i.event = "sledgehammer";
-                i.playerId = "P1";
+                i.playerId = "P2";
                 i.blockNumber = 0;
                 i.floorNumber = 0;
                 i.isFloorMoving = 0;
-                i.playerCoordx = this.playerCoordx1;
-                i.playerCoordy = this.playerCoordy1;
-                this.client.sendSledgehammer(i);
+                i.playerCoordx = this.playerCoordx2;
+                i.playerCoordy = this.playerCoordy2;
+                try {
+                    this.client.sendSledgehammer(i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-
+        if(this.typeInterface != "Observer"){
+            if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
+                jump(player1);
+            }
+            else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
+                jump(this.player2);
+        }
     }
+
+}
     private void playerMovingRight(JLabel player){
         int newx = player.getX() + MOVEMENT;
         int newy = player.getY();
@@ -522,6 +559,57 @@ public class graphicUI extends JFrame implements KeyListener {
         int newy = player.getY();
         if(newx > DEFAULTSIZE)
             player.setLocation(newx, newy);
+    }
+
+    private void jump(JLabel player){
+        int newx = player.getX();
+        int newy = player.getY();
+        int n = newy;
+        if(newx < HEIGHT - DEFAULTSIZE) {
+            System.out.println("I am here");
+            while (n >= newy - MOVEMENT*39) {
+                n = n - MOVEMENT;
+                player.setLocation(newx, n);
+            }
+        }
+    }
+
+    private void die(int player) throws InterruptedException {
+        int x;
+        int y;
+        if (player == 1)
+        {
+            x = this.player1.getX();
+            y = this.player1.getY();
+            this.panel.remove(this.player1);
+        }else {
+            x = this.player2.getX();
+            y = this.player2.getY();
+            this.panel.remove(this.player2);
+        }
+        JLabel fire = new JLabel(new ImageIcon(fireIcon));
+        fire.setSize(DEFAULTSIZE - SPACING,DEFAULTSIZE - SPACING);
+        fire.setLocation(x ,y);
+        this.panel.add(fire);
+        this.panel.remove(fire);
+    }
+    private void loseLife(JLabel player, int playerId) throws InterruptedException {
+        int newx = player.getX();
+        int newy = player.getY();
+        this.remove(player);
+        Thread.sleep(200);
+        if(playerId == 1){
+            this.player1 = new JLabel(new ImageIcon(player1Icon));
+            player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            player1.setLocation(newx, newy);
+            panel.add(player1);
+        } else if (playerId == 2) {
+            this.player2 = new JLabel(new ImageIcon(player1Icon));
+            player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            player2.setLocation(newx, newy);
+            panel.add(player2);
+        }
+
     }
 
 }

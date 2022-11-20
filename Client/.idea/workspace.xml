@@ -5,9 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dff7779e-be00-455c-8831-9156ff6037b3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/infoPackage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/banana.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/eggplant.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/fuego.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/hammer.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/hielo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/lettuce.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/orange.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/player1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/player2.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SocketClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SocketClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphicUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +113,7 @@
       <updated>1668652987838</updated>
       <workItem from="1668886398447" duration="154000" />
       <workItem from="1668886568185" duration="304000" />
-      <workItem from="1668886929255" duration="13381000" />
+      <workItem from="1668886929255" duration="20420000" />
     </task>
     <servers />
   </component>
