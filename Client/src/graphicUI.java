@@ -557,11 +557,42 @@ public class graphicUI extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         if(this.typeInterface != "Observer"){
+            infoPackage i = new infoPackage();
             if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
                 jump(this.player1);
+                /*
+                i.event = "destroyBlock";
+                i.playerId = "P1";
+                i.blockNumber = 0;
+                i.floorNumber = 0;
+                i.isFloorMoving = 0;
+                i.playerCoordx = this.playerCoordx1;
+                i.playerCoordy = this.playerCoordy1;
+                try {
+                    this.client.sendDestroyBlock(i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                 */
+
             }
             else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
                 jump(this.player2);
+                /*
+                i.event = "destroyBlock";
+                i.playerId = "P2";
+                i.blockNumber = 0;
+                i.floorNumber = 0;
+                i.isFloorMoving = 0;
+                i.playerCoordx = this.playerCoordx2;
+                i.playerCoordy = this.playerCoordy2;
+                try {
+                    this.client.sendDestroyBlock(i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                 */
         }
     }
 

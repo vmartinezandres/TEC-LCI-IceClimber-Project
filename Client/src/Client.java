@@ -27,19 +27,13 @@ public class Client extends ResponseController implements Runnable {
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
-    public void sendDestroyBlock() throws InterruptedException {
+    public void sendDestroyBlock(infoPackage i) throws InterruptedException {
         String event = "destroyBlock";
-        String playerId = "P1";
-        int playerCoordx = this.clientInterface.playerCoordx1;
-        int playerCoordy = this.clientInterface.playerCoordy1;
-        int blockNumber = 20;
-        int floorNumber = 2;
-        int isFloorMoving = 0;
-        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+        String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": "+i.playerId+", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
-    public void sendChangeFloors() throws InterruptedException {
+    public void sendChangeFloors(infoPackage i) throws InterruptedException {
         String event = "changeFloors";
         String playerId = "P1";
         int playerCoordx = this.clientInterface.playerCoordx1;
@@ -47,7 +41,7 @@ public class Client extends ResponseController implements Runnable {
         int blockNumber = 20;
         int floorNumber = 2;
         int isFloorMoving = 1;
-        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+playerId+", \"x\":"+playerCoordx+", \"y\":"+playerCoordy+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+i.playerId+", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
@@ -65,7 +59,7 @@ public class Client extends ResponseController implements Runnable {
             String message;
             int blockNumber = 0;
             int floorNumber = 0;
-            int isFloorMoving = this.clientInterface.isFloorMoving;
+            int isFloorMoving = 0;
             this.clientInterface.updatePlayerCoords();
             if(clientInterface.totalPlayer == 2){
                 message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+ ", \"y\":"+this.clientInterface.playerCoordy1+", \"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"},{\"id\":\"P2\", \"x\":"+this.clientInterface.playerCoordx2+", \"y\":"+this.clientInterface.playerCoordy2+" ,\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"}]}";
