@@ -57,8 +57,8 @@ public class graphicUI extends JFrame implements KeyListener {
     JLabel player2Label;
     JLabel lifeP1;
     JLabel lifeP2;
-    public int lifeP1int = 0;
-    public int lifeP2int = 0;
+    public int lifeP1int = 3;
+    public int lifeP2int = 3;
     public int pointsP1int = 0;
     public int pointsP2int = 0;
     JLabel pointsP1;
@@ -433,30 +433,48 @@ public class graphicUI extends JFrame implements KeyListener {
 
     public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2) throws InterruptedException {
         if(this.totalPlayer == 2) {
+            System.out.println(lifes1 +" "+this.lifeP1int+" "+lifeP2int+ " "+ lifes2);
             String pointP1 = Integer.toString(points1);
             String pointP2 = Integer.toString(points2);
             String lifeP1 = Integer.toString(lifes1);
             String lifeP2 = Integer.toString(lifes2);
-            if(lifes1 == 0)
+            if(lifes1 == this.lifeP1int - 1){
+                //loseLife(this.player1, 1);
+            }
+            else if(lifes1 == 0)
             {
                 die(1);
+
             }
             if(lifes2 == 0)
             {
                 die(2);
+
+            } else if(lifes2 == this.lifeP2int - 1 ){
+                //loseLife(this.player2, 2);
             }
+            if(lifes2 == 0 && lifes1==0)
+                // termianr juego
+            this.lifeP2int = lifes2;
+            this.lifeP1int = lifes1;
             this.lifeP1.setText(lifeP1);
             this.lifeP2.setText(lifeP2);
             this.pointsP1.setText(pointP1);
             this.pointsP2.setText(pointP2);
         }else {
-            this.lifeP1int = lifes1;
-            this.pointsP1int = points1;
             String pointP1 = Integer.toString(points1);
             String lifeP1 = Integer.toString(lifes1);
+            if(lifes1 == 0)
+            {
+                die(1);
+            }
+            else if(lifes1 < this.lifeP1int){
+                loseLife(this.player1, 1);
+            }
             this.lifeP1.setText(lifeP1);
             this.pointsP1.setText(pointP1);
         }
+        updatePlayerCoords();
 
         // Validar si tiene nuevas vidas o nuevos puntos
     }
@@ -540,7 +558,7 @@ public class graphicUI extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
         if(this.typeInterface != "Observer"){
             if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
-                jump(player1);
+                jump(this.player1);
             }
             else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
                 jump(this.player2);
@@ -574,35 +592,27 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
 
-    private void die(int player) throws InterruptedException {
-        int x;
-        int y;
+    private void die(int player) {
+        System.out.println("Me voy a morir");
         if (player == 1)
         {
-            x = this.player1.getX();
-            y = this.player1.getY();
             this.panel.remove(this.player1);
         }else {
-            x = this.player2.getX();
-            y = this.player2.getY();
             this.panel.remove(this.player2);
         }
-        JLabel fire = new JLabel(new ImageIcon(fireIcon));
-        fire.setSize(DEFAULTSIZE - SPACING,DEFAULTSIZE - SPACING);
-        fire.setLocation(x ,y);
-        this.panel.add(fire);
-        this.panel.remove(fire);
     }
     private void loseLife(JLabel player, int playerId) throws InterruptedException {
+        System.out.println("Perdi una vida id "+playerId);
         int newx = player.getX();
         int newy = player.getY();
-        this.remove(player);
-        Thread.sleep(200);
         if(playerId == 1){
-            this.player1 = new JLabel(new ImageIcon(player1Icon));
-            player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+            this.player1.setIcon(new ImageIcon());
+            this.player1.setLocation(newx, newy+DEFAULTSIZE*10);
+            updatePlayerCoords();
+            Thread.sleep(250);
+            this.player2.setIcon(new ImageIcon(player1Icon));
             player1.setLocation(newx, newy);
-            panel.add(player1);
+            updatePlayerCoords();
         } else if (playerId == 2) {
             this.player2 = new JLabel(new ImageIcon(player1Icon));
             player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
