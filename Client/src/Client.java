@@ -32,7 +32,6 @@ public class Client extends ResponseController implements Runnable {
     * Responsable de cerrar el cliente una vez que se termine el juego
     * */
     public void close() throws InterruptedException {
-        Thread.sleep(4000);
         client.closeSocket();
     }
 
@@ -64,7 +63,7 @@ public class Client extends ResponseController implements Runnable {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         int n = 0;
         while (true)
         {

@@ -7,14 +7,11 @@
     <list default="true" id="dff7779e-be00-455c-8831-9156ff6037b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClientObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientObserver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ResponseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ResponseController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SocketClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SocketClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphicUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server" beforeDir="false" afterPath="$PROJECT_DIR$/../server" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.h" beforeDir="false" afterPath="$PROJECT_DIR$/../server.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../serverSocket.c" beforeDir="false" afterPath="$PROJECT_DIR$/../serverSocket.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -59,6 +59,8 @@ public class graphicUI extends JFrame implements KeyListener {
     public JLabel lifeP1;
     public JLabel lifeP2;
     public int lifeP1int = 3;
+    public int levelP1 = 0;
+    public int levelP2 = 0;
     public int lifeP2int = 3;
     public int pointsP1int = 0;
     public int pointsP2int = 0;
@@ -66,6 +68,10 @@ public class graphicUI extends JFrame implements KeyListener {
     public int currentBlockP1 = 0;
     public int currentFloorP2 = 0;
     public int currentBlockP2 = 0;
+    public JLabel player1Level;
+    public JLabel player2Level;
+    public JLabel levelLabelP1;
+    public JLabel levelLabelP2;
     public JLabel pointsP1;
     public JLabel pointsP2;
     public JLabel labelLifeP1;
@@ -92,6 +98,11 @@ public class graphicUI extends JFrame implements KeyListener {
 
     Font font = new Font("Arial", Font.PLAIN, 16);
 
+    /**
+     * Constructor
+     * @param typeInterface
+     * @param players
+     */
     public graphicUI(String typeInterface, int players) {
         this.typeInterface = typeInterface;
         this.totalPlayer = players;
@@ -150,6 +161,17 @@ public class graphicUI extends JFrame implements KeyListener {
         updatePlayerCoords();
 
         // Iniciar labels para puntos y vidas
+
+        this.player1Level = new JLabel("Level ");
+        this.player1Level.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player1Level.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY + SPACING*5);
+        this.panel.add(this.player1Level, JLayeredPane.MODAL_LAYER);
+
+        this.levelLabelP1 = new JLabel("0" );
+        this.levelLabelP1.setSize(LABELWIDTH, LABELHEIGHT);
+        this.levelLabelP1.setLocation(LABELINITIALPOSX +LABELGAPRIGHT,LABELIN0ITIALPOSY+SPACING*5);
+        this.panel.add(this.levelLabelP1, JLayeredPane.MODAL_LAYER);
+
         this.player1Label = new JLabel("Jugador 1");
         this.player1Label.setSize(LABELWIDTH, LABELHEIGHT);
         this.player1Label.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY);
@@ -174,6 +196,17 @@ public class graphicUI extends JFrame implements KeyListener {
         this.pointsP1.setSize(LABELWIDTH,LABELHEIGHT);
         this.pointsP1.setLocation(LABELINITIALPOSX + 2*LABELGAPRIGHT + 2*LABELGAPRIGHT/3,LABELIN0ITIALPOSY);
         this.panel.add(this.pointsP1, JLayeredPane.MODAL_LAYER);
+
+
+        this.player2Level = new JLabel("Level ");
+        this.player2Level.setSize(LABELWIDTH, LABELHEIGHT);
+        this.player2Level.setLocation(LABELINITIALPOSX + 4*LABELGAPRIGHT ,LABELIN0ITIALPOSY + SPACING*5);
+        this.panel.add(this.player2Level, JLayeredPane.MODAL_LAYER);
+
+        this.levelLabelP2= new JLabel("0" );
+        this.levelLabelP2.setSize(LABELWIDTH, LABELHEIGHT);
+        this.levelLabelP2.setLocation(LABELINITIALPOSX + 5*LABELGAPRIGHT,LABELIN0ITIALPOSY + SPACING*5);
+        this.panel.add(this.levelLabelP2, JLayeredPane.MODAL_LAYER);
 
         this.player2Label = new JLabel("| Jugador 2");
         this.player2Label.setSize(LABELWIDTH, LABELHEIGHT);
@@ -228,6 +261,11 @@ public class graphicUI extends JFrame implements KeyListener {
         this.client = client;
     }
 
+    /**
+     * Crea los pisos
+     * @param floorPosition
+     * @return
+     */
     public JLabel[] buildFloor (int floorPosition){
         Random rand = new Random();
         JLabel[] floor = new JLabel[BLOCKS];
@@ -246,6 +284,11 @@ public class graphicUI extends JFrame implements KeyListener {
         return floor;
     }
 
+    /**
+     * Construye el primer piso segun la posicion
+     * @param floorPosition
+     * @return
+     */
     public JLabel[]  buildGround (int floorPosition){
         JLabel[] floor = new JLabel[BLOCKS];
         for (int i = 0; i < BLOCKS; i++){
@@ -258,6 +301,10 @@ public class graphicUI extends JFrame implements KeyListener {
         return floor;
     }
 
+    /**
+     * Crea los nuevos pisos acorde se vaya necesitando, cuando el jugador llega al  tercer piso
+     * @throws InterruptedException
+     */
     public void newFloors() throws InterruptedException {
         if (newFloors <= NEWFLOORSALLOWED) {
             //DISPLACEMENT = DISPLACEMENT + GROUND - 2 * DEFAULTSIZE + SPACING;
@@ -304,6 +351,9 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
 
+    /**
+     * Elimina los pisos cuando llega al tercer piso
+     */
     public void deleteFloor(){
         try{
             for(int i = 0; i < BLOCKS; i++){
@@ -375,6 +425,9 @@ public class graphicUI extends JFrame implements KeyListener {
         return false;
     }
 
+    /**
+     * Creacion de npcs si aun no existe
+     */
     private void createNpc(String id, int x, int y)
     {
 
@@ -452,12 +505,24 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
 
-    public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2) throws InterruptedException {
+    /*Actualiza los puntos, vidas y niveles segun server*/
+    public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2, int level1, int level2) throws InterruptedException {
         if(this.totalPlayer == 2) {
             String pointP1 = Integer.toString(points1);
             String pointP2 = Integer.toString(points2);
             String lifeP1 = Integer.toString(lifes1);
             String lifeP2 = Integer.toString(lifes2);
+            this.lifeP1.setText(lifeP1);
+            this.lifeP2.setText(lifeP2);
+            this.pointsP1.setText(pointP1);
+            this.pointsP2.setText(pointP2);
+
+            String levels1 = Integer.toString(level1);
+            String levels2 = Integer.toString(level2);
+            this.levelLabelP1.setText(levels1);
+            this.levelLabelP2.setText(levels2);
+
+
             if(lifes1 == this.lifeP1int - 1){
                 //loseLife(this.player1, 1);
                 this.lifeP1int--;
@@ -487,15 +552,29 @@ public class graphicUI extends JFrame implements KeyListener {
                 client.close();
 
             }
+            /*
+            else if(level1 > 4 || level2 > 4)
+            {
+                JOptionPane.showMessageDialog(this.panel, "You are the winners",
+                        "You won!", JOptionPane.OK_CANCEL_OPTION);
+                client.close();
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+
+             */
             this.lifeP2int = lifes2;
             this.lifeP1int = lifes1;
-            this.lifeP1.setText(lifeP1);
-            this.lifeP2.setText(lifeP2);
-            this.pointsP1.setText(pointP1);
-            this.pointsP2.setText(pointP2);
+
         }else {
             String pointP1 = Integer.toString(points1);
             String lifeP1 = Integer.toString(lifes1);
+            this.lifeP1.setText(lifeP1);
+            this.pointsP1.setText(pointP1);
+
+            String levels1 = Integer.toString(level1);
+            this.levelLabelP1.setText(levels1);
+
+
             if(lifes1 == 0)
             {
                 // teminar juego
@@ -505,17 +584,54 @@ public class graphicUI extends JFrame implements KeyListener {
                 client.close();
                 this.setDefaultCloseOperation(EXIT_ON_CLOSE);
             }
+            /*
+            else if(level1 > 4)
+            {
+                JOptionPane.showMessageDialog(this.panel, "You are the winner",
+                        "You won!", JOptionPane.OK_CANCEL_OPTION);
+                client.close();
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+
+             */
             else if(lifes1 < this.lifeP1int){
                 this.lifeP1int--;
                 player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
                 updateCurrentFloor();
             }
-            this.lifeP1.setText(lifeP1);
-            this.pointsP1.setText(pointP1);
+
         }
         updatePlayerCoords();
 
         // Validar si tiene nuevas vidas o nuevos puntos
+    }
+
+    public void updateLevel(int level1, int level2) throws InterruptedException {
+        if(this.totalPlayer == 2){
+            String levels1 = Integer.toString(level1);
+            String levels2 = Integer.toString(level2);
+            this.levelLabelP1.setText(levels1);
+            this.levelLabelP2.setText(levels2);
+            if(level1 > 4 || level2 > 4)
+            {
+                JOptionPane.showMessageDialog(this.panel, "You are the winners",
+                        "You won!", JOptionPane.OK_CANCEL_OPTION);
+                client.close();
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        }
+        else{
+            String levels1 = Integer.toString(level1);
+            this.levelLabelP1.setText(levels1);
+            if(level1 > 4)
+            {
+                JOptionPane.showMessageDialog(this.panel, "You are the winner",
+                        "You won!", JOptionPane.OK_CANCEL_OPTION);
+                client.close();
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+
+        }
     }
 
     public void updatePointsAndLifesInObserver(String points1, String points2, String lifes1, String lifes2)

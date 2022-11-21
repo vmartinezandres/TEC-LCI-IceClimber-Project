@@ -82,9 +82,8 @@ public class SocketClient
     {
         try
         {
-
-            if(socket.isConnected())
-            {
+            //if(socket.isConnected())
+            //{
                 
                 /* Se obtiene un flujo de envío de datos para enviar un dato al servidor */
                 DataOutputStream request = new DataOutputStream (socket.getOutputStream());
@@ -108,11 +107,7 @@ public class SocketClient
                 String responseToString = dato.d;
 
                 return parseResponse(responseToString);
-            }
-            else
-            {
-                return new JSONObject();
-            }
+           // }
         }
         catch (Exception e)
         {

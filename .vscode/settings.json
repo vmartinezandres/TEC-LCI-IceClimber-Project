@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "socket.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "json.h": "c"
     },
     "java.project.referencedLibraries": [
         "lib/**/*.jar",

@@ -499,7 +499,7 @@ void changeFloorsEvent(void){
     
     // Players lifes
     for (char i = 0; i < numPlayers; i++) {
-        if(sPlayers[i].floor < 4){
+        if(sPlayers[i].floor < 3){
             updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
         }
         updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level + 1, sPlayers[i].lifes, sPlayers[i].points, i);
