@@ -6,12 +6,13 @@ all : Servidor Cliente
 
 
 # Coloca aqui el path donde te hayas descargado y compilado la mini-librería de sockets
-PATH_CHSOCKET=//home/geogardow/Desktop/TEC-LCI-IceClimber-Project/library
+# PATH_CHSOCKET=//home/geogardow/Desktop/TEC-LCI-IceClimber-Project/library
+PATH_CHSOCKET=//home/diani/Documents/TEC-LCI-IceClimber-Project/library
 
 CFLAGS = -g -I. -I$(PATH_CHSOCKET)
 
 server : serverSocket.c
-	cc serverSocket.c server.c -ljson-c -L$(PATH_CHSOCKET) -lChSocket -lm -o server
+	cc serverSocket.c server.c -ljson-c -L$(PATH_CHSOCKET) -lChSocket -lm -pthread -o server
 
 client : SocketClient.java 
 	javac -cp /home/diani/Documents/json-simple-1.1.1.jar SocketClient.java DataSocket.java

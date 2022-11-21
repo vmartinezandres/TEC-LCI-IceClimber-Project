@@ -133,7 +133,7 @@ public class graphicUI extends JFrame implements KeyListener {
         if(this.totalPlayer == 2){
             this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-            player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
+            player1.setLocation(DEFAULTSIZE*8, GROUND - 2 * DEFAULTSIZE + SPACING);
             panel.add(player1, JLayeredPane.MODAL_LAYER);
 
             this.player2 = new JLabel(new ImageIcon(player2Icon));
@@ -143,7 +143,7 @@ public class graphicUI extends JFrame implements KeyListener {
         }else {
             this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-            player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
+            player1.setLocation(DEFAULTSIZE*8, GROUND - 2 * DEFAULTSIZE + SPACING);
             panel.add(player1, JLayeredPane.MODAL_LAYER);
         }
 
@@ -260,7 +260,7 @@ public class graphicUI extends JFrame implements KeyListener {
 
     public void newFloors() throws InterruptedException {
         if (newFloors <= NEWFLOORSALLOWED) {
-            DISPLACEMENT = DISPLACEMENT + GROUND - 2 * DEFAULTSIZE + SPACING;
+            //DISPLACEMENT = DISPLACEMENT + GROUND - 2 * DEFAULTSIZE + SPACING;
             deleteFloor();
             adjustYPos();
             ground = fourthFloor;
@@ -273,14 +273,19 @@ public class graphicUI extends JFrame implements KeyListener {
             fifthFloor = buildGround(FIFTHFLOOR);
             subFifth = buildFloor(SUBFIFTH);
             if (currentFloorP1 != 4 && currentFloorP2 == 4) {
-                loseLife(player1, 1);
                 lifeP1.setText(Integer.toString(lifeP1int));
             } else if (currentFloorP1 == 4 && currentFloorP2 != 4) {
-                loseLife(player2, 2);
-                lifeP2.setText(Integer.toString(lifeP2int));
+                if(this.totalPlayer == 2)
+                    lifeP2.setText(Integer.toString(lifeP2int));
             }
-            player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
-            player2.setLocation(player2.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+            if(this.totalPlayer == 2)
+            {
+                player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+                player2.setLocation(player2.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+            }else {
+                player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+            }
+
             updateCurrentFloor();
             this.panel.repaint();
             newFloors++;
@@ -347,8 +352,13 @@ public class graphicUI extends JFrame implements KeyListener {
     /*Esto es solo para cliente observador*/
     public void updatePlayer(int x1, int x2, int y1, int y2)
     {
-        this.player1.setLocation(x1,y1);
-        this.player2.setLocation(x2,y2);
+        if(this.totalPlayer == 2){
+            this.player1.setLocation(x1,y1);
+            this.player2.setLocation(x2,y2);
+        }else{
+            this.player1.setLocation(x1,y1);
+        }
+
     }
 
     /* Revisa si ya existe el id de los npcs, y si no existe retorna True*/
@@ -444,7 +454,6 @@ public class graphicUI extends JFrame implements KeyListener {
 
     public void updatePointsAndLifes(int points1, int points2, int lifes1, int lifes2) throws InterruptedException {
         if(this.totalPlayer == 2) {
-            System.out.println(lifes1 +" "+this.lifeP1int+" "+lifeP2int+ " "+ lifes2);
             String pointP1 = Integer.toString(points1);
             String pointP2 = Integer.toString(points2);
             String lifeP1 = Integer.toString(lifes1);
@@ -470,8 +479,14 @@ public class graphicUI extends JFrame implements KeyListener {
                 player2.setLocation(player2.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
                 updateCurrentFloor();
             }
-            if(lifes2 == 0 && lifes1==0)
-                // termianr juego
+            if(lifes2 <= 0 && lifes1<=0)
+            {
+                JOptionPane.showMessageDialog(this.panel, "Game over",
+                    "Game over", JOptionPane.OK_CANCEL_OPTION);
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                client.close();
+
+            }
             this.lifeP2int = lifes2;
             this.lifeP1int = lifes1;
             this.lifeP1.setText(lifeP1);
@@ -483,10 +498,17 @@ public class graphicUI extends JFrame implements KeyListener {
             String lifeP1 = Integer.toString(lifes1);
             if(lifes1 == 0)
             {
+                // teminar juego
                 die(1);
+                JOptionPane.showMessageDialog(this.panel, "Game over",
+                        "Game over", JOptionPane.OK_CANCEL_OPTION);
+                client.close();
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
             }
             else if(lifes1 < this.lifeP1int){
-                loseLife(this.player1, 1);
+                this.lifeP1int--;
+                player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+                updateCurrentFloor();
             }
             this.lifeP1.setText(lifeP1);
             this.pointsP1.setText(pointP1);
@@ -525,14 +547,25 @@ public class graphicUI extends JFrame implements KeyListener {
     }
 
     public void updateCurrentBlock(){
-        this.currentBlockP1 = (this.player1.getX()+20) / DEFAULTSIZE ;
-        this.currentBlockP2 = (this.player2.getX()+20) / DEFAULTSIZE;
+        if(this.totalPlayer == 2)
+        {
+            this.currentBlockP1 = (this.player1.getX()+20) / DEFAULTSIZE ;
+            this.currentBlockP2 = (this.player2.getX()+20) / DEFAULTSIZE;
+        }else{
+            this.currentBlockP1 = (this.player1.getX()+20) / DEFAULTSIZE ;
+        }
+
     }
 
     public void updateCurrentFloor(){
-        this.currentFloorP1 = (HEIGHT-this.player1.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
-        this.currentFloorP2 = (HEIGHT-this.player2.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
-        System.out.println(this.currentFloorP2);
+        if(this.totalPlayer == 2)
+        {
+            this.currentFloorP1 = (HEIGHT-this.player1.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
+            this.currentFloorP2 = (HEIGHT-this.player2.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
+        }else {
+            this.currentFloorP1 = (HEIGHT-this.player1.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
+        }
+       // System.out.println(this.currentFloorP2);
     }
 
     @Override
@@ -568,21 +601,25 @@ public class graphicUI extends JFrame implements KeyListener {
                 playerMovingLeft(this.player2);
                 updateCurrentBlock();
             } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
-                playerMovingRight(this.player2);
-                updateCurrentBlock();
+                if(this.totalPlayer == 2)
+                    playerMovingRight(this.player2);
+                    updateCurrentBlock();
             } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
-                updateCurrentFloor();
-                i.event = "sledgehammer";
-                i.playerId = "P2";
-                i.blockNumber = 0;
-                i.floorNumber = 0;
-                i.isFloorMoving = 0;
-                i.playerCoordx = this.playerCoordx2;
-                i.playerCoordy = this.playerCoordy2;
-                try {
-                    this.client.sendSledgehammer(i);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if(this.totalPlayer == 2)
+                {
+                    updateCurrentFloor();
+                    i.event = "sledgehammer";
+                    i.playerId = "P2";
+                    i.blockNumber = 0;
+                    i.floorNumber = 0;
+                    i.isFloorMoving = 0;
+                    i.playerCoordx = this.playerCoordx2;
+                    i.playerCoordy = this.playerCoordy2;
+                    try {
+                        this.client.sendSledgehammer(i);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
@@ -604,55 +641,51 @@ public class graphicUI extends JFrame implements KeyListener {
                         throw new RuntimeException(e);
                     }
                     this.isFloorMoving = 1;
-                } else {
-                    this.isFloorMoving = 0;
-                }
-                /*
-                i.event = "destroyBlock";
-                i.playerId = "P1";
-                i.blockNumber = 0;
-                i.floorNumber = 0;
-                i.isFloorMoving = 0;
-                i.playerCoordx = this.playerCoordx1;
-                i.playerCoordy = this.playerCoordy1;
-                try {
-                    this.client.sendDestroyBlock(i);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                 */
-
-            }
-            else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
-                if(currentFloorP2 != 5) {
-                    jump(this.player2);
-                }
-                updateCurrentFloor();
-                if (this.currentFloorP1 == 4 || this.currentFloorP2 == 4){
+                    i.event = "changeFloor";
+                    i.playerId = "P1";
+                    i.blockNumber = 0;
+                    i.floorNumber = 0;
+                    i.isFloorMoving = this.isFloorMoving;
+                    i.playerCoordx = this.playerCoordx1;
+                    i.playerCoordy = this.playerCoordy1;
                     try {
-                        newFloors();
+                        this.client.sendChangeFloors(i);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    this.isFloorMoving = 1;
                 } else {
                     this.isFloorMoving = 0;
                 }
-                /*
-                i.event = "destroyBlock";
-                i.playerId = "P2";
-                i.blockNumber = 0;
-                i.floorNumber = 0;
-                i.isFloorMoving = 0;
-                i.playerCoordx = this.playerCoordx2;
-                i.playerCoordy = this.playerCoordy2;
-                try {
-                    this.client.sendDestroyBlock(i);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            }
+            else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
+                if(this.totalPlayer == 2){
+                    if(currentFloorP2 != 5) {
+                        jump(this.player2);
+                    }
+                    updateCurrentFloor();
+                    if (this.currentFloorP1 == 4 || this.currentFloorP2 == 4){
+                        try {
+                            newFloors();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        this.isFloorMoving = 1;
+                        i.event = "changeFloor";
+                        i.playerId = "P2";
+                        i.blockNumber = 0;
+                        i.floorNumber = 0;
+                        i.isFloorMoving = this.isFloorMoving;
+                        i.playerCoordx = this.playerCoordx1;
+                        i.playerCoordy = this.playerCoordy1;
+                        try {
+                            this.client.sendChangeFloors(i);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        this.isFloorMoving = 0;
+                    }
                 }
-
-                 */
         }
     }
 
@@ -666,7 +699,7 @@ public class graphicUI extends JFrame implements KeyListener {
     private void playerMovingLeft(JLabel player){
         int newx = player.getX() - MOVEMENT;
         int newy = player.getY();
-        if(newx > DEFAULTSIZE)
+        if(newx > 0)
             player.setLocation(newx, newy);
     }
 
@@ -675,7 +708,6 @@ public class graphicUI extends JFrame implements KeyListener {
         int newy = player.getY();
         int n = newy;
         if(newx < HEIGHT - DEFAULTSIZE) {
-            System.out.println("I am here");
             while (n >= newy - MOVEMENT*39) {
                 n = n - MOVEMENT;
                 player.setLocation(newx, n);
@@ -701,7 +733,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 this.player1.setLocation(newx, newy + DEFAULTSIZE * 10);
                 updatePlayerCoords();
                 Thread.sleep(250);
-                this.player2.setIcon(new ImageIcon(player1Icon));
+                this.player1.setIcon(new ImageIcon(player1Icon));
                 player1.setLocation(newx, newy);
                 updatePlayerCoords();
             } else if (playerId == 2) {

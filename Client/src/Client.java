@@ -10,17 +10,26 @@ public class Client extends ResponseController implements Runnable {
 
     SocketClient client;
 
+    /*
+    * Constructor de clase cliente
+    * */
     public Client(graphicUI clientInterface)
     {
         this.clientInterface = clientInterface;
         client = new SocketClient();
     }
 
+    /*Empezar */
     public void start()
     {
         client.runClient();
         Thread thread = new Thread(this);
         thread.run();
+    }
+
+    public void close() throws InterruptedException {
+        Thread.sleep(4000);
+        client.closeSocket();
     }
     public void sendSledgehammer(infoPackage i) throws InterruptedException {
         String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
@@ -29,7 +38,7 @@ public class Client extends ResponseController implements Runnable {
     }
     public void sendDestroyBlock(infoPackage i) throws InterruptedException {
         String event = "destroyBlock";
-        String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": "+i.playerId+", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
+        String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
@@ -41,7 +50,7 @@ public class Client extends ResponseController implements Runnable {
         int blockNumber = 20;
         int floorNumber = 2;
         int isFloorMoving = 1;
-        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": "+i.playerId+", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
+        String message = "{\"evento\": \""+event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
@@ -49,7 +58,7 @@ public class Client extends ResponseController implements Runnable {
     @Override
     public void run() {
         int n = 0;
-        while (n <= 100)
+        while (true)
         {
             try {
                 Thread.sleep(250);

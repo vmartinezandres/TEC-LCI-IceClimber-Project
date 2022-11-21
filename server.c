@@ -3,6 +3,9 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
+#include <time.h>
+#include <pthread.h>
+#include <unistd.h>
 #include "server.h"
 
 
@@ -30,15 +33,13 @@ struct Player {
 
 char blockWidth = 40;
 
-// Global constants
-#define PI 3.14159265359
 
 // Global variables
 bool isStart = true;
 
 char numFloorsChanged = 0;
 
-char floors[4][25];
+char floors[5][24];
 
 struct Player sPlayers[2]; // Maximo 2 jugadores
 char numPlayers = 0;
@@ -46,9 +47,13 @@ char numPlayers = 0;
 struct Npc sNPCs[20]; // Maximo 20 Npcs
 char numNPCs = 0;
 
+time_t t;
+
+pthread_t thread_id;
+
 // Functions
 void createFloors(void) {
-    for (char i = 0; i < 4; i++) {
+    for (char i = 0; i < 5; i++) {
         for (char j = 0; j < 24; j++) {
             floors[i][j] = 'F';
         }
@@ -77,16 +82,59 @@ void createPlayers(char name[3], float xPos, float yPos) {
     numPlayers++;
 }
 
+void *createNPCsInExecution(void *vargp){
+    
+    char name[3];
+    int floor;
+    
+    while(true) {
+        printf("\nNew NPC:");
+        
+        printf("\nID:");
+        scanf("%s", name);
+        
+        printf("\nFloor:");
+        scanf("%i", &floor);
+        
+        switch (name[0]) {
+            case 'S':
+                createNPCs(name, rand() % 24, (5-floor)*5, 3*PI/2, 4);
+                break;
+            case 'B':
+                createNPCs(name, rand() % 24, (5-floor)*5, PI/2, 1);
+                break;
+            case 'P':
+                createNPCs(name, rand() % 24, (5-floor)*5 - 1, 3*PI/2, 1);
+                break;
+                
+            default:
+                createNPCs(name, rand() % 24, (5-floor)*5 + 2, 0, 1);
+                
+                break;
+        }
+    }
+    return NULL;
+}
 
 void createGame(char nPlyrs) {
     // Floors
     createFloors();
     
     // NPCs
-    createNPCs("S1", 1, 17, 0, 1);
-    createNPCs("B1", 22, 1, 3*PI/4, 1);
-//    createNPCs("P1", 22, 1, 3*PI/2, 1);
-//    createNPCs("E1", 8, 17, 0, 1);
+    createNPCs("S1", 1, 17, 0, -1);
+    createNPCs("S2", 22, 12, PI, -1);
+    createNPCs("S3", 1, 7, 0, -1);
+    createNPCs("S4", 22, 2, PI, -1);
+
+    createNPCs("B1", 22, 0, 3*PI/4, 1);
+    createNPCs("B2", 1, 0, PI/4, 1);
+
+    createNPCs("P1", 16, 4, 3*PI/2, 1);
+
+    createNPCs("A1", 22, 17, 0, 1);
+    createNPCs("B1", 1, 12, 0, 1);
+    createNPCs("O1", 22, 7, 0, 1);
+    createNPCs("L1", 1, 2, 0, 1);
 
     // Players
     switch (nPlyrs) {
@@ -99,6 +147,11 @@ void createGame(char nPlyrs) {
             createPlayers("P1", 1, 21);
             break;
     }
+    
+    srand((unsigned) time(&t));
+    
+    pthread_create(&thread_id, NULL, createNPCsInExecution, NULL);
+//    pthread_join(thread_id, NULL);
 }
 
 void updateNPC(float x, float y, float direction, char moves, char i){
@@ -152,8 +205,8 @@ void moveNPCs(void){
                         else {
                             updatePlayer(sPlayers[j].xPos, sPlayers[j].yPos, sPlayers[j].level, sPlayers[j].lifes, sPlayers[j].points + 400, j);
                         }
+                        updateNPC(sNPCs[i].xPos, sNPCs[i].yPos + 15, sNPCs[i].direction, -1, i);
                     }
-                    printf("\nChoque!");
                 }
             }
         }
@@ -175,21 +228,20 @@ void moveNPCs(void){
             }
             
             else{
-                if(sNPCs[i].floor > 1){
-                    // Encima de un hueco
-                    char iFloor = sNPCs[i].floor - 2;
-                    char jBlock = truncf(sNPCs[i].xPos);
-                    if(floors[iFloor][jBlock] == 'H'){
-                        updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, 3*PI/2, 10, i);
-                    }
-                    else{
-                        // Contacto a los lados con un hueco (funciona para cualquier direccion)
-                        jBlock =  jBlock + cosf(sNPCs[i].direction);
-                        if (floors[iFloor][jBlock] == 'H') {
-                            updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, PI - sNPCs[i].direction, sNPCs[i].moves, i);
-                        }
+                // Encima de un hueco
+                char iFloor = sNPCs[i].floor - 1;
+                char jBlock = truncf(sNPCs[i].xPos);
+                if(floors[iFloor][jBlock] == 'H'){
+                    updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, 3*PI/2, 10, i);
+                }
+                else{
+                    // Contacto a los lados con un hueco (funciona para cualquier direccion)
+                    jBlock = jBlock + cosf(sNPCs[i].direction);
+                    if (floors[iFloor][jBlock] == 'H') {
+                        updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, PI - sNPCs[i].direction, sNPCs[i].moves, i);
                     }
                 }
+                
             }
         }
         
@@ -219,7 +271,9 @@ void moveNPCs(void){
                 updateNPC(sNPCs[i].xPos, sNPCs[i].yPos, sNPCs[i].direction, sNPCs[i].moves - 1, i);
 
                 if(sNPCs[i].moves == 0){
-                    updateNPC(1, 4, (3 * PI) / 2, 40, i);
+                    char xPosRandom = rand() % 24;
+                    char yPosRandom = (rand() % 4) * 5 + 4;
+                    updateNPC(xPosRandom, yPosRandom, (3 * PI) / 2, 40, i);
 
                 }
             }
@@ -257,6 +311,13 @@ char* answerUpdate(void) {
         asprintf(&y, "%d", (short) (sPlayers[i].yPos * blockWidth));
         strcat(response, y);
         free(y);
+        strcat(response, ", ");
+        
+        strcat(response, "\"level\" : ");
+        char *level;
+        asprintf(&level, "%d", (short) (sPlayers[i].level));
+        strcat(response, level);
+        free(level);
         strcat(response, ", ");
         
         strcat(response, "\"lifes\" : ");
@@ -348,16 +409,55 @@ void destroyBlockEvent(char iPlayer, char iFloor, char jBlock) {
 
 void changeFloorsEvent(void){
     numFloorsChanged++;
-    for (char i = 0; i < numNPCs; i++) {
-        updateNPC(sNPCs[i].xPos, sNPCs[i].yPos + 15, sNPCs[i].direction, sNPCs[i].moves, i);
+    
+    // Floors added
+    for (char i = 0; i < 4; i++) {
+        if(i < 2){
+            for (char j = 0; j < 24; j++) {
+                floors[i][j] = floors[i+3][j+3];
+            }
+        }
+        else{
+            for (char j = 0; j < 24; j++) {
+                floors[i][j] = 'F';
+            }
+        }
     }
     
+    // NPCs positions
+    for (char i = 0; i < numNPCs; i++) {
+        
+        if(sNPCs[i].floor > 0){ // In the game
+            updateNPC(sNPCs[i].xPos, sNPCs[i].yPos + 15, sNPCs[i].direction, sNPCs[i].moves, i);
+        }
+            
+        if(sNPCs[i].floor < 1){ // Out the game
+            switch (sNPCs[i].name[0]) {
+                case 'S':
+                    updateNPC(rand() % 24, sNPCs[i].yPos - 25, rand() % 2 * PI, -1, i);
+                    break;
+                    
+                case 'B':
+                    updateNPC(rand() % 24, sNPCs[i].yPos - 25, PI/2, 1, i);
+                    break;
+                case 'P':
+                    updateNPC(rand() % 24, (rand() % 4) * 5 + 4, 3*PI/2, 1, i);
+                    break;
+                default:
+                    updateNPC(rand() % 24, sNPCs[i].yPos - 25, 0, 1, i);
+                    break;
+            }
+        }
+    }
+    
+    // Players lifes
     for (char i = 0; i < 0; i++) {
         if(sPlayers[i].floor < 4){
             updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
         }
         updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level + 1, sPlayers[i].lifes, sPlayers[i].points, i);
     }
+    
 }
 
 char* receiveMessage(struct messageBox mb){
@@ -394,4 +494,3 @@ char* receiveMessage(struct messageBox mb){
     
     return answerUpdate();
 }
-

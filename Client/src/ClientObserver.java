@@ -26,7 +26,7 @@ public class ClientObserver extends ResponseController{
 
     public void update() {
         int n = 0;
-        while (n <= 100)
+        while (true)
         {
             try {
                 Thread.sleep(250);
@@ -59,9 +59,16 @@ public class ClientObserver extends ResponseController{
         clientInterface.updateNpcs(npcs);
         clientInterface.updatePointsAndLifesInObserver(pointP1, pointP2, lifeP1, lifeP2);
         int x1 = this.observedInterface.playerCoordx1;
-        int x2 = this.observedInterface.playerCoordx2;
+        int x2 = 0;
         int y1 = this.observedInterface.playerCoordy1;
-        int y2 = this.observedInterface.playerCoordy2;
+        int y2 = 0;
+
+        if(this.observedInterface.totalPlayer == 2)
+        {
+            x2 = this.observedInterface.playerCoordx2;
+            y2 = this.observedInterface.playerCoordy2;
+        }
+
         clientInterface.updatePlayer(x1, x2, y1, y2);
     }
 

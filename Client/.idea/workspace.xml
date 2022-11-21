@@ -5,10 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dff7779e-be00-455c-8831-9156ff6037b3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/out/production/Client/Client/src/assets/initial.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/Client/Client/src/assets/observer.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/Client/Client/src/assets/one.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/Client/Client/src/assets/two.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Client/Client/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Client/Client/src/assets/background.png" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client/src/assets/background.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClientObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StartGameUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/StartGameUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphicUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphicUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server" beforeDir="false" afterPath="$PROJECT_DIR$/../server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server.h" beforeDir="false" afterPath="$PROJECT_DIR$/../server.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../serverSocket.c" beforeDir="false" afterPath="$PROJECT_DIR$/../serverSocket.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +75,8 @@
       <recent name="Client.src" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.App">
-    <configuration name="App" type="Application" factoryName="Application">
+  <component name="RunManager" selected="Application.Game">
+    <configuration name="App" type="Application" factoryName="Application" singleton="false">
       <option name="MAIN_CLASS_NAME" value="Client.src.App" />
       <module name="Client" />
       <method v="2">
@@ -117,7 +131,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Geo" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -125,6 +151,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/SocketClient.java</url>
+          <line>58</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

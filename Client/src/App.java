@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-/*Esto es una clase demo de como se ve el flujo de las cosas */
+/* Esta clase es el punto de partida para el juego  */
 public class App {
     public static void main(String[] args) {
         StartGameUI startGameUI = new StartGameUI();

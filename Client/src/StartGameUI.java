@@ -96,6 +96,7 @@ public class StartGameUI extends JFrame implements ActionListener, MouseListener
         if (e.getSource() == boton1) {
             this.currentGame = new Game();
             this.currentGame.startGame(1);
+
         }
         else if (e.getSource() == boton2) {
             this.currentGame = new Game();

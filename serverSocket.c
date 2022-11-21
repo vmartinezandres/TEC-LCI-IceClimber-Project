@@ -36,7 +36,7 @@ struct messageBox ReadParseJson(char *Data)
 
 	json_object_object_get_ex(json, "evento", &event);
 
-	printf ("Servidor C: Recibido %s\n", json_object_get_string(event));
+	//printf ("Servidor C: Recibido %s\n", json_object_get_string(event));
 
 	parseMessage.event = json_object_get_string(event);
 
@@ -44,7 +44,7 @@ struct messageBox ReadParseJson(char *Data)
 	
 	nJugadores = json_object_array_length(players);
 
-	printf("Found %lu players \n", nJugadores);
+	//printf("Found %lu players \n", nJugadores);
 
 
 	/* 
@@ -55,22 +55,24 @@ struct messageBox ReadParseJson(char *Data)
 		player = json_object_array_get_idx(players, i);
 
 		json_object_object_get_ex(player, "id", &idPlayer);
-		printf ("Id de jugador: %s\n", json_object_get_string(idPlayer));
+		//printf ("Id de jugador: %s\n", json_object_get_string(idPlayer));
 
 		xCoordenate = json_object_object_get(player, "x");
-		printf ("Coordenada en x: %d\n", json_object_get_int(xCoordenate));
+		//printf ("Coordenada en x: %d\n", json_object_get_int(xCoordenate));
 
 		yCoordanate = json_object_object_get(player, "y");
-		printf ("Coordenada en y: %d\n", json_object_get_int(yCoordanate));
+		//printf ("Coordenada en y: %d\n", json_object_get_int(yCoordanate));
 
 		blockNumber = json_object_object_get(player, "blockNumber");
-		printf ("Block Number: %d\n", json_object_get_int(blockNumber));
+		//printf ("Block Number: %d\n", json_object_get_int(blockNumber));
 
 		floorNumber = json_object_object_get(player, "floorNumber");
-		printf ("Floor number: %d\n", json_object_get_int(floorNumber));
+		//printf ("Floor number: %d\n", json_object_get_int(floorNumber));
 
 		isFloorMoving = json_object_object_get(player, "isFloorMoving");
-		printf ("Is floor moving: %d\n", json_object_get_int(isFloorMoving));
+		//printf ("Is floor moving: %d\n", json_object_get_int(isFloorMoving));
+
+		player2.id = NULL;
 
 		if( i == 0)
 		{
@@ -157,11 +159,11 @@ main ()
 
 				/* El entero recibido hay que transformarlo de formato red a formato hardware */
 				int longitudCadena = ntohl(aux);
-				printf ("Servidor C: Recibido %d\n", longitudCadena-1);
+				//printf ("Servidor C: Recibido %d\n", longitudCadena-1);
 
 				/* Se lee la cadena */
 				Lee_Socket (Socket_Cliente, Cadena, longitudCadena);
-				printf ("Servidor C: Recibido %s\n", Cadena);
+				//printf ("Servidor C: Recibido %s\n", Cadena);
 
 
 				struct messageBox mes = ReadParseJson(Cadena);
@@ -184,12 +186,12 @@ main ()
 
 				/* Se envía el entero transformado */
 				Escribe_Socket (Socket_Cliente, (char *)&aux_response, sizeof(lenght));
-				printf ("Servidor C: Enviado %d\n", lenght-1);
+				//printf ("Servidor C: Enviado %d\n", lenght-1);
 				
 
 				/* Se envía la cadena */
 				Escribe_Socket (Socket_Cliente, response, lenght);
-				printf ("Servidor C: Enviado %s\n", response);
+				//printf ("Servidor C: Enviado %s\n", response);
 			}
 		}
 	}
