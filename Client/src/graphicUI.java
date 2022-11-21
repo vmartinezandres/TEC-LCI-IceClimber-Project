@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class graphicUI extends JFrame implements KeyListener {
-
+    private int NEWFLOORSALLOWED = 3;
+    private int newFloors = 0;
     private int LABELWIDTH = 100;
     private int LABELHEIGHT = 20;
     private  int LABELINITIALPOSX = 10;
     private int LABELIN0ITIALPOSY = 0;
     private int LABELGAPRIGHT = 120;
-    private int LABELGAPDOWN = 25;
+    private int DISPLACEMENT = 0;
     public int playerCoordx1 = 0;
     public int playerCoordy1 = 0;
     public int playerCoordx2 = 0;
@@ -49,24 +50,28 @@ public class graphicUI extends JFrame implements KeyListener {
     public JLabel[] subFifth;
     public Dictionary<String, JLabel> npcs;
     public Dictionary<String, int[]> npcsServer;
-    public JPanel panel;
-    JLabel backgroundLabel;
-    JLabel player1;
-    JLabel player2;
-    JLabel player1Label;
-    JLabel player2Label;
-    JLabel lifeP1;
-    JLabel lifeP2;
+    public JLayeredPane panel;
+    public JLabel backgroundLabel;
+    public JLabel player1;
+    public JLabel player2;
+    public JLabel player1Label;
+    public JLabel player2Label;
+    public JLabel lifeP1;
+    public JLabel lifeP2;
     public int lifeP1int = 3;
     public int lifeP2int = 3;
     public int pointsP1int = 0;
     public int pointsP2int = 0;
-    JLabel pointsP1;
-    JLabel pointsP2;
-    JLabel labelLifeP1;
-    JLabel labelLifeP2;
-    JLabel labelPointP1;
-    JLabel labelPointP2;
+    public int currentFloorP1 = 0;
+    public int currentBlockP1 = 0;
+    public int currentFloorP2 = 0;
+    public int currentBlockP2 = 0;
+    public JLabel pointsP1;
+    public JLabel pointsP2;
+    public JLabel labelLifeP1;
+    public JLabel labelLifeP2;
+    public JLabel labelPointP1;
+    public JLabel labelPointP2;
     public BufferedImage backgroundImage;
     public BufferedImage iceIcon;
     public BufferedImage sealIcon;
@@ -96,7 +101,7 @@ public class graphicUI extends JFrame implements KeyListener {
         addKeyListener(this);
 
         // Inicializar panel
-        panel = new JPanel();
+        panel = new JLayeredPane();
         panel.setLayout(null);
         panel.setBackground(Color.decode(background));
         this.getContentPane().add(this.panel);
@@ -129,17 +134,17 @@ public class graphicUI extends JFrame implements KeyListener {
             this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
             player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
-            panel.add(player1);
+            panel.add(player1, JLayeredPane.MODAL_LAYER);
 
             this.player2 = new JLabel(new ImageIcon(player2Icon));
             player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-            player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING*2);
-            panel.add(player2);
+            player2.setLocation(50, GROUND - 2 * DEFAULTSIZE + SPACING);
+            panel.add(player2, JLayeredPane.MODAL_LAYER);
         }else {
             this.player1 = new JLabel(new ImageIcon(player1Icon));
             player1.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
             player1.setLocation(DEFAULTSIZE*8, SECONDFLOOR - 2 * DEFAULTSIZE + SPACING);
-            panel.add(player1);
+            panel.add(player1, JLayeredPane.MODAL_LAYER);
         }
 
         updatePlayerCoords();
@@ -148,52 +153,52 @@ public class graphicUI extends JFrame implements KeyListener {
         this.player1Label = new JLabel("Jugador 1");
         this.player1Label.setSize(LABELWIDTH, LABELHEIGHT);
         this.player1Label.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY);
-        this.panel.add(this.player1Label);
+        this.panel.add(this.player1Label, JLayeredPane.MODAL_LAYER);
 
-        this.labelLifeP1 = new JLabel("Vida: ");
+        this.labelLifeP1 = new JLabel("| Vida: ");
         this.labelLifeP1.setSize(LABELWIDTH,LABELHEIGHT);
-        this.labelLifeP1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY + LABELGAPDOWN);
-        this.panel.add(this.labelLifeP1);
+        this.labelLifeP1.setLocation(LABELINITIALPOSX +LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.labelLifeP1, JLayeredPane.MODAL_LAYER);
 
         this.lifeP1 = new JLabel("0");
         this.lifeP1.setSize(LABELWIDTH,LABELHEIGHT);
-        this.lifeP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN);
-        this.panel.add(this.lifeP1);
+        this.lifeP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT/ 2,LABELIN0ITIALPOSY);
+        this.panel.add(this.lifeP1, JLayeredPane.MODAL_LAYER);
 
-        this.labelPointP1 = new JLabel("Puntos: ");
+        this.labelPointP1 = new JLabel("| Puntos: ");
         this.labelPointP1.setSize(LABELWIDTH,LABELHEIGHT);
-        this.labelPointP1.setLocation(LABELINITIALPOSX,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
-        this.panel.add(this.labelPointP1);
+        this.labelPointP1.setLocation(LABELINITIALPOSX + 2*LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.labelPointP1, JLayeredPane.MODAL_LAYER);
 
         this.pointsP1 = new JLabel("0");
         this.pointsP1.setSize(LABELWIDTH,LABELHEIGHT);
-        this.pointsP1.setLocation(LABELINITIALPOSX + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
-        this.panel.add(this.pointsP1);
+        this.pointsP1.setLocation(LABELINITIALPOSX + 2*LABELGAPRIGHT + 2*LABELGAPRIGHT/3,LABELIN0ITIALPOSY);
+        this.panel.add(this.pointsP1, JLayeredPane.MODAL_LAYER);
 
-        this.player2Label = new JLabel("Jugador 2");
+        this.player2Label = new JLabel("| Jugador 2");
         this.player2Label.setSize(LABELWIDTH, LABELHEIGHT);
-        this.player2Label.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY);
-        this.panel.add(this.player2Label);
+        this.player2Label.setLocation(LABELINITIALPOSX + 4*LABELGAPRIGHT ,LABELIN0ITIALPOSY);
+        this.panel.add(this.player2Label, JLayeredPane.MODAL_LAYER);
 
-        this.labelLifeP2 = new JLabel("Vida: ");
+        this.labelLifeP2 = new JLabel("| Vida: ");
         this.labelLifeP2.setSize(LABELWIDTH,LABELHEIGHT);
-        this.labelLifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT,LABELIN0ITIALPOSY + LABELGAPDOWN);
-        this.panel.add(this.labelLifeP2);
+        this.labelLifeP2.setLocation(LABELINITIALPOSX + 5*LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.labelLifeP2, JLayeredPane.MODAL_LAYER);
 
         this.lifeP2 = new JLabel("0");
         this.lifeP2.setSize(LABELWIDTH,LABELHEIGHT);
-        this.lifeP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2 ,LABELIN0ITIALPOSY + LABELGAPDOWN);
-        this.panel.add(this.lifeP2);
+        this.lifeP2.setLocation(LABELINITIALPOSX + 5*LABELGAPRIGHT + LABELGAPRIGHT/2 ,LABELIN0ITIALPOSY);
+        this.panel.add(this.lifeP2, JLayeredPane.MODAL_LAYER);
 
         this.labelPointP2 = new JLabel("Puntos: ");
         this.labelPointP2.setSize(LABELWIDTH,LABELHEIGHT);
-        this.labelPointP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT ,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
-        this.panel.add(this.labelPointP2);
+        this.labelPointP2.setLocation(LABELINITIALPOSX + 6*LABELGAPRIGHT,LABELIN0ITIALPOSY);
+        this.panel.add(this.labelPointP2, JLayeredPane.MODAL_LAYER);
 
         this.pointsP2 = new JLabel("0");
         this.pointsP2.setSize(LABELWIDTH,LABELHEIGHT);
-        this.pointsP2.setLocation(LABELINITIALPOSX + LABELGAPRIGHT + LABELGAPRIGHT / 2,LABELIN0ITIALPOSY + LABELGAPDOWN * 2);
-        this.panel.add(this.pointsP2);
+        this.pointsP2.setLocation(LABELINITIALPOSX + 6*LABELGAPRIGHT + 2*LABELGAPRIGHT/3,LABELIN0ITIALPOSY);
+        this.panel.add(this.pointsP2, JLayeredPane.MODAL_LAYER);
 
 
         // Inicializar los pisos
@@ -212,18 +217,7 @@ public class graphicUI extends JFrame implements KeyListener {
         backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
         backgroundLabel.setSize(WIDTH, HEIGHT);
         backgroundLabel.setLocation(0, 0);
-
-        //panel.add(backgroundLabel);
-
-
-
-        //newFloors();
-/*
-
-       if (!admin){ USAR PARA CLIENTE OBSERVADOR O JUGADOR
-            usersAdminButton.setEnabled(false);
-        }
-*/
+        panel.add(backgroundLabel, JLayeredPane.DEFAULT_LAYER);
 
         this.panel.repaint();
         this.setVisible(true);
@@ -238,13 +232,16 @@ public class graphicUI extends JFrame implements KeyListener {
         Random rand = new Random();
         JLabel[] floor = new JLabel[BLOCKS];
         for (int i = 0; i < BLOCKS; i++){
+            JLabel newBlock;
             if (rand.nextInt((1) + 1) == 1) {
-                JLabel newBlock = new JLabel(new ImageIcon(iceIcon));
-                newBlock.setSize(DEFAULTSIZE, DEFAULTSIZE);
-                newBlock.setLocation(i * DEFAULTSIZE, floorPosition);
-                panel.add(newBlock);
-                floor[i] = newBlock;
+                newBlock = new JLabel(new ImageIcon(iceIcon));
+            } else {
+                newBlock = new JLabel(new ImageIcon());
             }
+            newBlock.setSize(DEFAULTSIZE, DEFAULTSIZE);
+            newBlock.setLocation(i * DEFAULTSIZE, floorPosition);
+            panel.add(newBlock, JLayeredPane.PALETTE_LAYER);
+            floor[i] = newBlock;
         }
         return floor;
     }
@@ -255,48 +252,62 @@ public class graphicUI extends JFrame implements KeyListener {
             JLabel newBlock = new JLabel(new ImageIcon(iceIcon));
             newBlock.setSize(DEFAULTSIZE, DEFAULTSIZE);
             newBlock.setLocation(i*DEFAULTSIZE, floorPosition);
-            panel.add(newBlock);
+            panel.add(newBlock, JLayeredPane.PALETTE_LAYER);
             floor[i] = newBlock;
         }
         return floor;
     }
 
-    public void newFloors(){
-        deleteFloor(ground);
-        deleteFloor(secondFloor);
-        deleteFloor(subSecond);
-        deleteFloor(thirdFloor);
-        deleteFloor(subThird);
-        deleteFloor(subFourth);
-        adjustYPos(GROUND, fourthFloor);
-        adjustYPos(SECONDFLOOR, fifthFloor);
-        adjustYPos(SUBSECOND, subFifth);
-        ground = fourthFloor;
-        secondFloor = fifthFloor;
-        subSecond = subFifth;
-        thirdFloor = buildGround(THIRDFLOOR);
-        subThird = buildFloor(SUBTHIRD);
-        fourthFloor = buildGround(FOURTHFLOOR);
-        subFourth = buildFloor(SUBFOURTH);
-        fifthFloor = buildGround(FIFTHFLOOR);
-        subFifth = buildFloor(SUBFIFTH);
-        this.panel.repaint();
+    public void newFloors() throws InterruptedException {
+        if (newFloors <= NEWFLOORSALLOWED) {
+            DISPLACEMENT = DISPLACEMENT + GROUND - 2 * DEFAULTSIZE + SPACING;
+            deleteFloor();
+            adjustYPos();
+            ground = fourthFloor;
+            secondFloor = fifthFloor;
+            subSecond = subFifth;
+            thirdFloor = buildGround(THIRDFLOOR);
+            subThird = buildFloor(SUBTHIRD);
+            fourthFloor = buildGround(FOURTHFLOOR);
+            subFourth = buildFloor(SUBFOURTH);
+            fifthFloor = buildGround(FIFTHFLOOR);
+            subFifth = buildFloor(SUBFIFTH);
+            if (currentFloorP1 != 4 && currentFloorP2 == 4) {
+                loseLife(player1, 1);
+                lifeP1.setText(Integer.toString(lifeP1int));
+            } else if (currentFloorP1 == 4 && currentFloorP2 != 4) {
+                loseLife(player2, 2);
+                lifeP2.setText(Integer.toString(lifeP2int));
+            }
+            player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+            player2.setLocation(player2.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+            updateCurrentFloor();
+            this.panel.repaint();
+            newFloors++;
+        }
     }
 
-    public void adjustYPos(int floorPosition, JLabel[] floor){
+    public void adjustYPos(){
         try{
             for(int i = 0; i < BLOCKS; i++){
-                floor[i].setLocation(floor[i].getX(), floorPosition);
+                fourthFloor[i].setLocation(fourthFloor[i].getX(), GROUND);
+                fifthFloor[i].setLocation(fifthFloor[i].getX(), SECONDFLOOR);
+                subFifth[i].setLocation(subFifth[i].getX(), SUBSECOND);
             }
         } catch (Exception e){
 
         }
     }
 
-    public void deleteFloor(JLabel[] floor){
+    public void deleteFloor(){
         try{
             for(int i = 0; i < BLOCKS; i++){
-                this.remove(floor[i]);
+                this.panel.remove(this.ground[i]);
+                this.panel.remove(this.secondFloor[i]);
+                this.panel.remove(this.subSecond[i]);
+                this.panel.remove(this.thirdFloor[i]);
+                this.panel.remove(this.subThird[i]);
+                this.panel.remove(this.subFourth[i]);
                 this.revalidate();
             }
         } catch (Exception e){
@@ -323,7 +334,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 createNpc(id, x, y);
             } else if (isKeyPresent(id)) {
                 //System.out.println("Update npc:  "+ id + " en las coordenadas ("+x+","+y+")");
-                this.npcs.get(keyId).setLocation(x, y);
+                this.npcs.get(keyId).setLocation(x, y+DISPLACEMENT);
                 this.panel.repaint();
             }
             else {
@@ -364,7 +375,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel seal = new JLabel(new ImageIcon(sealIcon));
                 seal.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 seal.setLocation(x, y);
-                this.panel.add(seal);
+                this.panel.add(seal, JLayeredPane.MODAL_LAYER);
                 this.panel.repaint();
                 this.panel.revalidate();
                 this.npcs.put(id,seal);
@@ -374,7 +385,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel bird = new JLabel(new ImageIcon(birdIcon));
                 bird.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 bird.setLocation(x, y);
-                this.panel.add(bird);
+                this.panel.add(bird, JLayeredPane.MODAL_LAYER);
                 this.panel.repaint();
                 this.panel.revalidate();
                 this.npcs.put(id,bird);
@@ -384,7 +395,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel image = new JLabel(new ImageIcon(picoIcon));
                 image.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 image.setLocation(x, y);
-                this.panel.add(image);
+                this.panel.add(image, JLayeredPane.MODAL_LAYER);
                 this.panel.repaint();
                 this.panel.revalidate();
                 this.npcs.put(id,image);
@@ -394,7 +405,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel orange = new JLabel(new ImageIcon(orangeIcon));
                 orange.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 orange.setLocation(x, y);
-                this.panel.add(orange);
+                this.panel.add(orange, JLayeredPane.MODAL_LAYER);
                 this.npcs.put(id,orange);
                 this.panel.revalidate();
                 this.panel.repaint();
@@ -404,7 +415,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel banana = new JLabel(new ImageIcon(bananaIcon));
                 banana.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 banana.setLocation(x, y);
-                this.panel.add(banana);
+                this.panel.add(banana, JLayeredPane.MODAL_LAYER);
                 this.npcs.put(id,banana);
                 this.panel.revalidate();
                 this.panel.repaint();
@@ -414,7 +425,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel eggplant = new JLabel(new ImageIcon(eggplantIcon));
                 eggplant.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 eggplant.setLocation(x, y);
-                this.panel.add(eggplant);
+                this.panel.add(eggplant, JLayeredPane.MODAL_LAYER);
                 this.npcs.put(id,eggplant);
                 this.panel.revalidate();
                 this.panel.repaint();
@@ -424,7 +435,7 @@ public class graphicUI extends JFrame implements KeyListener {
                 JLabel lettuce = new JLabel(new ImageIcon(lettuceIcon));
                 lettuce.setSize(DEFAULTSIZE, DEFAULTSIZE);
                 lettuce.setLocation(x, y);
-                this.panel.add(lettuce);
+                this.panel.add(lettuce, JLayeredPane.MODAL_LAYER);
                 this.npcs.put(id,lettuce);
                 this.panel.repaint();
                 break;
@@ -440,18 +451,24 @@ public class graphicUI extends JFrame implements KeyListener {
             String lifeP2 = Integer.toString(lifes2);
             if(lifes1 == this.lifeP1int - 1){
                 //loseLife(this.player1, 1);
+                this.lifeP1int--;
+                player1.setLocation(player1.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+                updateCurrentFloor();
             }
-            else if(lifes1 == 0)
+            else if(lifes1 <= 0)
             {
                 die(1);
 
             }
-            if(lifes2 == 0)
+            if(lifes2 <= 0)
             {
                 die(2);
 
             } else if(lifes2 == this.lifeP2int - 1 ){
                 //loseLife(this.player2, 2);
+                this.lifeP2int--;
+                player2.setLocation(player2.getX(), GROUND - 2 * DEFAULTSIZE + SPACING);
+                updateCurrentFloor();
             }
             if(lifes2 == 0 && lifes1==0)
                 // termianr juego
@@ -507,6 +524,17 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
 
+    public void updateCurrentBlock(){
+        this.currentBlockP1 = (this.player1.getX()+20) / DEFAULTSIZE ;
+        this.currentBlockP2 = (this.player2.getX()+20) / DEFAULTSIZE;
+    }
+
+    public void updateCurrentFloor(){
+        this.currentFloorP1 = (HEIGHT-this.player1.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
+        this.currentFloorP2 = (HEIGHT-this.player2.getY()-80) / (SPACING*DEFAULTSIZE) + 1;
+        System.out.println(this.currentFloorP2);
+    }
+
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 
@@ -518,9 +546,12 @@ public class graphicUI extends JFrame implements KeyListener {
             infoPackage i = new infoPackage();
             if (keyEvent.getKeyChar() == 'a') { // mover a la izquierda para jugador 1
                 playerMovingLeft(this.player1);
+                updateCurrentBlock();
             } else if (keyEvent.getKeyChar() == 'd') { // mover a la derecha para jugador 1
                 playerMovingRight(this.player1);
+                updateCurrentBlock();
             } else if (keyEvent.getKeyChar() == 's') { // Para funcion martillo de jugador 1
+                updateCurrentFloor();
                 i.event = "sledgehammer";
                 i.playerId = "P1";
                 i.blockNumber = 0;
@@ -535,9 +566,12 @@ public class graphicUI extends JFrame implements KeyListener {
                 }
             } else if (keyEvent.getKeyCode() == keyEvent.VK_LEFT) { // Mover a la izquierda jugador 2
                 playerMovingLeft(this.player2);
+                updateCurrentBlock();
             } else if (keyEvent.getKeyCode() == keyEvent.VK_RIGHT) { // Mover a la derecha jugador 2
                 playerMovingRight(this.player2);
+                updateCurrentBlock();
             } else if (keyEvent.getKeyCode() == keyEvent.VK_DOWN) { // Para función de martillo
+                updateCurrentFloor();
                 i.event = "sledgehammer";
                 i.playerId = "P2";
                 i.blockNumber = 0;
@@ -559,7 +593,20 @@ public class graphicUI extends JFrame implements KeyListener {
         if(this.typeInterface != "Observer"){
             infoPackage i = new infoPackage();
             if(keyEvent.getKeyChar()=='w'){ // Salta y romper bloque de jugador 1
-                jump(this.player1);
+                if(currentFloorP1 != 5) {
+                    jump(this.player1);
+                }
+                updateCurrentFloor();
+                if (this.currentFloorP1 == 4 || this.currentFloorP2 == 4){
+                    try {
+                        newFloors();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    this.isFloorMoving = 1;
+                } else {
+                    this.isFloorMoving = 0;
+                }
                 /*
                 i.event = "destroyBlock";
                 i.playerId = "P1";
@@ -577,7 +624,20 @@ public class graphicUI extends JFrame implements KeyListener {
 
             }
             else if (keyEvent.getKeyCode() == keyEvent.VK_UP) { // Saltar y romper de jugador 2
-                jump(this.player2);
+                if(currentFloorP2 != 5) {
+                    jump(this.player2);
+                }
+                updateCurrentFloor();
+                if (this.currentFloorP1 == 4 || this.currentFloorP2 == 4){
+                    try {
+                        newFloors();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    this.isFloorMoving = 1;
+                } else {
+                    this.isFloorMoving = 0;
+                }
                 /*
                 i.event = "destroyBlock";
                 i.playerId = "P2";
@@ -633,24 +693,23 @@ public class graphicUI extends JFrame implements KeyListener {
         }
     }
     private void loseLife(JLabel player, int playerId) throws InterruptedException {
-        System.out.println("Perdi una vida id "+playerId);
-        int newx = player.getX();
-        int newy = player.getY();
-        if(playerId == 1){
-            this.player1.setIcon(new ImageIcon());
-            this.player1.setLocation(newx, newy+DEFAULTSIZE*10);
-            updatePlayerCoords();
-            Thread.sleep(250);
-            this.player2.setIcon(new ImageIcon(player1Icon));
-            player1.setLocation(newx, newy);
-            updatePlayerCoords();
-        } else if (playerId == 2) {
-            this.player2 = new JLabel(new ImageIcon(player1Icon));
-            player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
-            player2.setLocation(newx, newy);
-            panel.add(player2);
+            System.out.println("Perdi una vida id " + playerId);
+            int newx = player.getX();
+            int newy = player.getY();
+            if (playerId == 1) {
+                this.player1.setIcon(new ImageIcon());
+                this.player1.setLocation(newx, newy + DEFAULTSIZE * 10);
+                updatePlayerCoords();
+                Thread.sleep(250);
+                this.player2.setIcon(new ImageIcon(player1Icon));
+                player1.setLocation(newx, newy);
+                updatePlayerCoords();
+            } else if (playerId == 2) {
+                this.player2 = new JLabel(new ImageIcon(player1Icon));
+                player2.setSize(DEFAULTSIZE, 2 * DEFAULTSIZE);
+                player2.setLocation(newx, newy);
+                panel.add(player2, JLayeredPane.MODAL_LAYER);
         }
-
     }
 
 }
