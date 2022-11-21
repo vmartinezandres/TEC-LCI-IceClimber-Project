@@ -7,9 +7,11 @@
 #include <pthread.h>
 #include <unistd.h>
 #include "server.h"
+#include "Constants.c"
 
 
 // Structs
+/*Struct para definir los npcs*/
 struct Npc {
     char name[3];
     float xPos;
@@ -20,6 +22,9 @@ struct Npc {
     
 };
 
+/*
+Struct para definir player
+*/
 struct Player {
     char name[3];
     float xPos;
@@ -52,6 +57,10 @@ time_t t;
 pthread_t thread_id;
 
 // Functions
+
+/*
+Create floors in client
+*/
 void createFloors(void) {
     for (char i = 0; i < 5; i++) {
         for (char j = 0; j < 24; j++) {
@@ -60,6 +69,9 @@ void createFloors(void) {
     }
 }
 
+/*
+Create npcs in client
+*/
 void createNPCs(char name[3], float xPos, float yPos, float direction, char moves) {
     strcpy(sNPCs[numNPCs].name, name);
     sNPCs[numNPCs].xPos = xPos;
@@ -72,6 +84,9 @@ void createNPCs(char name[3], float xPos, float yPos, float direction, char move
     
 }
 
+/*
+Create players in server
+*/
 void createPlayers(char name[3], float xPos, float yPos) {
     strcpy(sPlayers[numPlayers].name, name);
     sPlayers[numPlayers].xPos = xPos;
@@ -82,6 +97,9 @@ void createPlayers(char name[3], float xPos, float yPos) {
     numPlayers++;
 }
 
+/*
+Creates npcs in runtime
+*/
 void *createNPCsInExecution(void *vargp){
     
     char name[3];
@@ -116,18 +134,21 @@ void *createNPCsInExecution(void *vargp){
     return NULL;
 }
 
+/*
+Strating point of game
+*/
 void createGame(char nPlyrs) {
     // Floors
     createFloors();
     
     // NPCs
-    createNPCs("S1", 1, 17, 0, -1);
+    //createNPCs("S1", 1, 17, 0, -1);
     createNPCs("S2", 22, 12, PI, -1);
     createNPCs("S3", 1, 7, 0, -1);
     createNPCs("S4", 22, 2, PI, -1);
 
-    createNPCs("B1", 22, 0, 3*PI/4, 1);
-    createNPCs("B2", 1, 0, PI/4, 1);
+    //createNPCs("B1", 22, 0, 3*PI/4, 1);
+    //createNPCs("B2", 1, 0, PI/4, 1);
 
     createNPCs("P1", 16, 4, 3*PI/2, 1);
 
@@ -154,6 +175,9 @@ void createGame(char nPlyrs) {
 //    pthread_join(thread_id, NULL);
 }
 
+/*
+Update Npcs positions
+*/
 void updateNPC(float x, float y, float direction, char moves, char i){
     sNPCs[i].xPos = x;
     sNPCs[i].yPos = y;
@@ -162,6 +186,9 @@ void updateNPC(float x, float y, float direction, char moves, char i){
     sNPCs[i].moves = moves;
 }
 
+/*
+Update players positons and status based on response from client
+*/
 void updatePlayer(float x, float y, char level, char lifes, int points, char i){
     sPlayers[i].xPos = x;
     sPlayers[i].yPos = y;
@@ -171,12 +198,18 @@ void updatePlayer(float x, float y, char level, char lifes, int points, char i){
     sPlayers[i].points = points;
 }
 
+/*
+Move players to have name updated with client
+*/
 void movePlayers(float positionList[2][2]){
     for (char i = 0; i < numPlayers; i++) {
         updatePlayer(positionList[i][0], positionList[i][1], sPlayers[i].level, sPlayers[i].lifes, sPlayers[i].points,  i);
     }
 }
 
+/*
+Move npcs and send new positions to client
+*/
 void moveNPCs(void){
     for (char i = 0; i < numNPCs; i++) {
 
@@ -292,6 +325,9 @@ void moveNPCs(void){
     }
 }
 
+/*
+Creates json response to send
+*/
 char* answerUpdate(void) {
     char response[1000] = "{ \"evento\" : \"update\", \"jugadores\" : [ ";
     for (char i = 0; i < numPlayers; i++) {
@@ -373,11 +409,16 @@ char* answerUpdate(void) {
     
 }
 
+/*Updating positions in update message*/
+
 void updateGame(float positionList[2][2]){
     movePlayers(positionList);
     moveNPCs();
 }
 
+/*
+Response to hammer event in client
+*/
 void sledgehammerEvent(char iPlayer){
     
     for (char i = 0; i < numNPCs; i++) {
@@ -402,11 +443,17 @@ void sledgehammerEvent(char iPlayer){
     }
 }
 
+/*
+Response to event when block is destroyed
+*/
 void destroyBlockEvent(char iPlayer, char iFloor, char jBlock) {
     floors[iFloor][jBlock] = 'H';
     updatePlayer(sPlayers[iPlayer].xPos, sPlayers[iPlayer].yPos, sPlayers[iPlayer].level, sPlayers[iPlayer].lifes, sPlayers[iPlayer].points + 10, iPlayer);
 }
 
+/*
+Response to event when block is destroyed
+*/
 void changeFloorsEvent(void){
     numFloorsChanged++;
     
@@ -451,7 +498,7 @@ void changeFloorsEvent(void){
     }
     
     // Players lifes
-    for (char i = 0; i < 0; i++) {
+    for (char i = 0; i < numPlayers; i++) {
         if(sPlayers[i].floor < 4){
             updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
         }
@@ -460,6 +507,9 @@ void changeFloorsEvent(void){
     
 }
 
+/*
+Recieve message from client and analize it 
+*/
 char* receiveMessage(struct messageBox mb){
     float positions[2][2] = {
         {(float) mb.player1.x / blockWidth, (float) mb.player1.y / blockWidth},

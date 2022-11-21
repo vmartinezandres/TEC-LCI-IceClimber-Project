@@ -36,7 +36,6 @@ struct messageBox ReadParseJson(char *Data)
 
 	json_object_object_get_ex(json, "evento", &event);
 
-	//printf ("Servidor C: Recibido %s\n", json_object_get_string(event));
 
 	parseMessage.event = json_object_get_string(event);
 
@@ -44,7 +43,6 @@ struct messageBox ReadParseJson(char *Data)
 	
 	nJugadores = json_object_array_length(players);
 
-	//printf("Found %lu players \n", nJugadores);
 
 
 	/* 
@@ -55,22 +53,16 @@ struct messageBox ReadParseJson(char *Data)
 		player = json_object_array_get_idx(players, i);
 
 		json_object_object_get_ex(player, "id", &idPlayer);
-		//printf ("Id de jugador: %s\n", json_object_get_string(idPlayer));
 
 		xCoordenate = json_object_object_get(player, "x");
-		//printf ("Coordenada en x: %d\n", json_object_get_int(xCoordenate));
 
 		yCoordanate = json_object_object_get(player, "y");
-		//printf ("Coordenada en y: %d\n", json_object_get_int(yCoordanate));
 
 		blockNumber = json_object_object_get(player, "blockNumber");
-		//printf ("Block Number: %d\n", json_object_get_int(blockNumber));
 
 		floorNumber = json_object_object_get(player, "floorNumber");
-		//printf ("Floor number: %d\n", json_object_get_int(floorNumber));
 
 		isFloorMoving = json_object_object_get(player, "isFloorMoving");
-		//printf ("Is floor moving: %d\n", json_object_get_int(isFloorMoving));
 
 		player2.id = NULL;
 
@@ -163,7 +155,6 @@ main ()
 
 				/* Se lee la cadena */
 				Lee_Socket (Socket_Cliente, Cadena, longitudCadena);
-				//printf ("Servidor C: Recibido %s\n", Cadena);
 
 
 				struct messageBox mes = ReadParseJson(Cadena);
@@ -171,14 +162,12 @@ main ()
 				char* serverResponse = receiveMessage(mes);
 
 				char response[1024];
-				//strcpy(response, "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":1, \"y\":2, \"lifes\": 3, \"points\": 100}, {\"id\":\"P2\", \"x\":3, \"y\":4, \"lifes\": 3, \"points\": 100}], \"npcs\": [{\"id\": \"S1\", \"x\":30, \"y\":20}, {\"id\":\"B1\", \"x\":150, \"y\":150}, {\"id\": \"S2\", \"x\":250, \"y\":100}, {\"id\":\"B2\", \"x\":200, \"y\":300}, {\"id\":\"B3\", \"x\":189, \"y\":10}]}");
 				strcpy(response, serverResponse);
 
 				/*
 				* Se envia un entero con la longitud de una cadena (incluido el \0 del final) 
 				* la cadena.
 				*/
-				//strcpy (Cadena, "mensaje de respuesta");
 				int lenght = strlen(response)+1;
 
 				/* El entero que se envía por el socket hay que transformalo a formato red */
@@ -186,12 +175,10 @@ main ()
 
 				/* Se envía el entero transformado */
 				Escribe_Socket (Socket_Cliente, (char *)&aux_response, sizeof(lenght));
-				//printf ("Servidor C: Enviado %d\n", lenght-1);
 				
 
 				/* Se envía la cadena */
 				Escribe_Socket (Socket_Cliente, response, lenght);
-				//printf ("Servidor C: Enviado %s\n", response);
 			}
 		}
 	}

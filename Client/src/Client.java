@@ -19,29 +19,37 @@ public class Client extends ResponseController implements Runnable {
         client = new SocketClient();
     }
 
-    /*Empezar */
+    /*Empezar a correr cliente, y se inicia el hilo*/
     public void start()
     {
         client.runClient();
         Thread thread = new Thread(this);
         thread.run();
+
     }
 
+    /*
+    * Responsable de cerrar el cliente una vez que se termine el juego
+    * */
     public void close() throws InterruptedException {
         Thread.sleep(4000);
         client.closeSocket();
     }
+
+    /*Manda el evento de martillo al server */
     public void sendSledgehammer(infoPackage i) throws InterruptedException {
         String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
+    /*Manda el evento de romper bloque al server */
     public void sendDestroyBlock(infoPackage i) throws InterruptedException {
         String event = "destroyBlock";
         String message = "{\"evento\": \""+i.event+"\", \"jugadores\": [{ \"id\": \""+i.playerId+"\", \"x\":"+i.playerCoordx+", \"y\":"+i.playerCoordy+",\"blockNumber\": "+i.blockNumber+",  \"floorNumber\": "+i.floorNumber+", \"isFloorMoving\": "+i.isFloorMoving+"}]}";
         JSONObject jsonResponse = client.sendRequest(message);
         update(jsonResponse);
     }
+    /*Manda el evento de cambio de pisos al server */
     public void sendChangeFloors(infoPackage i) throws InterruptedException {
         String event = "changeFloors";
         String playerId = "P1";
@@ -75,6 +83,7 @@ public class Client extends ResponseController implements Runnable {
             }else{
                 message = "{\"evento\": \"update\", \"jugadores\": [{ \"id\": \"P1\", \"x\":"+this.clientInterface.playerCoordx1+", \"y\":"+this.clientInterface.playerCoordy1+",\"blockNumber\": "+blockNumber+",  \"floorNumber\": "+floorNumber+", \"isFloorMoving\": "+isFloorMoving+"},]}";
             }
+
             JSONObject jsonResponse = client.sendRequest(message);
             try {
                 update(jsonResponse);
@@ -91,8 +100,10 @@ public class Client extends ResponseController implements Runnable {
         int pointP2 = getPlayersPoints(jsonResponse, 2);
         int lifeP1 = getPlayersLifes(jsonResponse, 1);
         int lifeP2 = getPlayersLifes(jsonResponse, 2);
+        int levelP1 = getPlayersLevel(jsonResponse, 1);
+        int levelP2 = getPlayersLevel(jsonResponse, 2);
         clientInterface.updateNpcs(npcs);
-        clientInterface.updatePointsAndLifes(pointP1, pointP2, lifeP1, lifeP2);
+        clientInterface.updatePointsAndLifes(pointP1, pointP2, lifeP1, lifeP2, levelP1, levelP2);
     }
 
     @Override
@@ -108,5 +119,10 @@ public class Client extends ResponseController implements Runnable {
     @Override
     public Dictionary<String, int[]> getNpcs(JSONObject json) {
         return super.getNpcs(json);
+    }
+
+    @Override
+    public int getPlayersLevel(JSONObject json, int jugador) {
+        return super.getPlayersLevel(json, jugador);
     }
 }

@@ -23,7 +23,6 @@ struct messageBox
 
 char* receiveMessage(struct messageBox mb);
 
-// Global constants
-#define PI 3.14159265359
+
 
 #endif

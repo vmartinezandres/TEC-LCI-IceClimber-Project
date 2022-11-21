@@ -78,10 +78,11 @@ public class SocketClient
     /*
      * Este método será utilizado para mandar el request de mensaje que el server necesita enviar
      */
-    public JSONObject sendRequest(String message)
+    public synchronized JSONObject sendRequest(String message)
     {
         try
         {
+
             if(socket.isConnected())
             {
                 

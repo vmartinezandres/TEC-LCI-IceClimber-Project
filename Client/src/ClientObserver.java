@@ -11,6 +11,10 @@ public class ClientObserver extends ResponseController{
 
     SocketClient client;
 
+    /**
+     * El cliente observador es un espejo del cliente jugador
+     * @param ObservedInterface
+     */
     public ClientObserver(graphicUI ObservedInterface)
     {
         this.observedInterface = ObservedInterface;
@@ -18,12 +22,18 @@ public class ClientObserver extends ResponseController{
         clientInterface = new graphicUI("Observer", observedInterface.totalPlayer);
     }
 
+    /**
+     * Inicio del cliente
+     */
     public void start()
     {
         client.runClient();
         update();
     }
 
+    /**
+     * Solo envia update a cliente
+     */
     public void update() {
         int n = 0;
         while (true)
@@ -49,6 +59,10 @@ public class ClientObserver extends ResponseController{
         }
     }
 
+    /**
+     * Lectura del mensaje de update
+     * @param jsonResponse
+     */
     public void update(JSONObject jsonResponse)
     {
         Dictionary<String, int[]> npcs = this.observedInterface.npcsServer;
