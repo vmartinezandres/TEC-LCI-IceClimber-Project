@@ -123,19 +123,19 @@ void createGame(char nPlyrs) {
     createFloors();
     
     // NPCs
-    createNPCs("S1", 1, 17, 0, -1);
-    createNPCs("S2", 22, 12, PI, -1);
-    createNPCs("S3", 1, 7, 0, -1);
-    createNPCs("S4", 22, 2, PI, -1);
-
-    createNPCs("B1", 22, 0, 3*PI/4, 1);
-    createNPCs("B2", 1, 0, PI/4, 1);
-
-    createNPCs("P1", 16, 4, 3*PI/2, 1);
-
-    createNPCs("A1", 22, 17, 0, 1);
-    createNPCs("B1", 1, 12, 0, 1);
-    createNPCs("O1", 22, 7, 0, 1);
+//    createNPCs("S1", 1, 17, 0, -1);
+//    createNPCs("S2", 22, 12, PI, -1);
+//    createNPCs("S3", 1, 7, 0, -1);
+//    createNPCs("S4", 22, 2, PI, -1);
+//
+//    createNPCs("B1", 22, 0, 3*PI/4, 1);
+//    createNPCs("B2", 1, 0, PI/4, 1);
+//
+//    createNPCs("P1", 16, 4, 3*PI/2, 1);
+//
+//    createNPCs("A1", 22, 17, 0, 1);
+//    createNPCs("B1", 1, 12, 0, 1);
+//    createNPCs("O1", 22, 7, 0, 1);
     createNPCs("L1", 1, 2, 0, 1);
 
     // Players
@@ -453,11 +453,14 @@ void changeFloorsEvent(void){
     }
     
     // Players lifes
-    for (char i = 0; i < 0; i++) {
+    for (char i = 0; i < numPlayers; i++) {
         if(sPlayers[i].floor < 4){
             updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level, sPlayers[i].lifes - 1, sPlayers[i].points, i);
         }
-        updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level + 1, sPlayers[i].lifes, sPlayers[i].points, i);
+        if(numFloorsChanged == 4){
+            updatePlayer(sPlayers[i].xPos, sPlayers[i].yPos, sPlayers[i].level + 1, sPlayers[i].lifes, sPlayers[i].points, i);
+            numFloorsChanged = 0;
+        }
     }
     
 }
